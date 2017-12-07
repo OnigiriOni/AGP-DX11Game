@@ -74,7 +74,7 @@ XMMATRIX Camera::CalculateViewMatrix()
 
 	position = XMVectorSet(x, y, z, 0.0);
 	lookat = XMVectorSet(x + dx, y, z + dz, 0.0);
-	up = XMVectorSet(0.0, 1.1, 0.0, 0.0);
+	up = XMVectorSet(0.0, 1.0, 0.0, 0.0);
 
 	view = XMMatrixLookAtLH(position, lookat, up);
 

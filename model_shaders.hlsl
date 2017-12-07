@@ -17,8 +17,7 @@ VOut ModelVS(float4 position : POSITION, float2 texcoord : TEXCOORD, float3 norm
 {
 	VOut output;
 
-	
-	float default_color = {1, 1, 1, 1};
+	float4 default_color = {1, 1, 1, 1};
 	output.color = default_color;
 	output.position = mul(WVPMatrix, position);
 	output.texcoord = texcoord;
