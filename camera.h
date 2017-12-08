@@ -27,4 +27,5 @@ public:
 	void Forward(float distance);
 	void Up(float distance);
 	XMMATRIX CalculateViewMatrix();
+	XMVECTOR GetPosition();
 };

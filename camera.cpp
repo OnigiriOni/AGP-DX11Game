@@ -48,23 +48,17 @@ Camera::~Camera()
 void Camera::Rotate(float degree)
 {
 	rotation += degree;
-
-	//CalculateViewMatrix();
 }
 
 void Camera::Forward(float distance)
 {
 	this->x += distance * dx;
 	this->z += distance * dz;
-
-	//CalculateViewMatrix();
 }
 
 void Camera::Up(float distance)
 {
 	this->y += distance;
-
-	//CalculateViewMatrix();
 }
 
 XMMATRIX Camera::CalculateViewMatrix()
@@ -79,4 +73,9 @@ XMMATRIX Camera::CalculateViewMatrix()
 	view = XMMatrixLookAtLH(position, lookat, up);
 
 	return view;
+}
+
+XMVECTOR Camera::GetPosition()
+{
+	return position;
 }

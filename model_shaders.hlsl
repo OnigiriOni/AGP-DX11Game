@@ -3,8 +3,11 @@ SamplerState sampler0;
 
 cbuffer CBuffer0
 {
-	matrix WVPMatrix;	// 64 bytes
-}	// total 64 bytes
+	matrix WVPMatrix;				// 64 bytes
+	float4 directionalLightVector;	// 16 bytes
+	float4 directionalLightColour;	// 16 bytes
+	float4 ambientLightColour;		// 16 bytes
+}	// total 112 bytes
 
 struct VOut
 {
@@ -17,8 +20,11 @@ VOut ModelVS(float4 position : POSITION, float2 texcoord : TEXCOORD, float3 norm
 {
 	VOut output;
 
-	float4 default_color = {1, 1, 1, 1};
-	output.color = default_color;
+	//float4 default_color = {1, 1, 1, 1};
+	float diffuse_amount = dot(directionalLightVector, normal);
+	diffuse_amount = saturate(diffuse_amount);
+	//output.color = default_color;
+	output.color = ambientLightColour + (directionalLightColour * diffuse_amount);
 	output.position = mul(WVPMatrix, position);
 	output.texcoord = texcoord;
 

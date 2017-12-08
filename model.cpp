@@ -4,8 +4,12 @@
 struct MODEL_CONSTANT_BUFFER
 {
 	XMMATRIX WorldViewProjection;		// 64 bytes ( 4 x 4 = 16 floats x 4 bytes)
-};										// TOTAL SIZE = 64 bytes				
-int model_cb_byteWidth = 64;	// The size of the combined buffer bytes. Always update after a const buffer struct change
+	XMVECTOR directionalLightVector;	// 16 bytes
+	XMVECTOR directionalLightColour;	// 16 bytes
+	XMVECTOR ambientLightColour;		// 16 bytes
+	//XMFLOAT2 packing_bytes;				// 2x4 bytes = 8 bytes
+};										// TOTAL SIZE = 112 bytes				
+int model_cb_byteWidth = 112;	// The size of the combined buffer bytes. Always update after a const buffer struct change
 
 Model::Model(ID3D11Device* device, ID3D11DeviceContext* context)
 {
@@ -21,6 +25,8 @@ Model::Model(ID3D11Device* device, ID3D11DeviceContext* context)
 	xPos = 0.0;
 	yPos = 0.0;
 	zPos = 0.0;
+
+	CalculateWorldMatrix();
 }
 
 HRESULT Model::LoadObjModel(char* filename)
@@ -31,12 +37,21 @@ HRESULT Model::LoadObjModel(char* filename)
 	{
 		return S_FALSE;
 	}
-	else
+	
+	if (FAILED(LoadShaders()))
 	{
-		Model::LoadShaders();
-		Model::CreateConstantBuffer();
-		return S_OK;
+		return S_FALSE;
 	}
+
+	if (FAILED(CreateConstantBuffer()))
+	{
+		return S_FALSE;
+	}
+	
+	CalculateModelCentre();
+	CalculateBoundingSphereRadius();
+
+	return S_OK;
 }
 
 HRESULT Model::LoadShaders()
@@ -135,19 +150,86 @@ HRESULT Model::CreateConstantBuffer()
 	return S_OK;
 }
 
-void Model::Draw(XMMATRIX *view, XMMATRIX *projection)
+void Model::CalculateModelCentre()
 {
-	XMMATRIX world;
+	float xMin = 0.0f, yMin = 0.0f, zMin = 0.0f;
+	float xMax = 0.0f, yMax = 0.0f, zMax = 0.0f;
+
+	for (int i = 0; i < m_pObject->numverts; i++)
+	{
+		// Min-Max for X
+		if (m_pObject->vertices[i].Pos.x > xMax)
+		{
+			xMax = m_pObject->vertices[i].Pos.x;
+		}
+		else if (m_pObject->vertices[i].Pos.x < xMin)
+		{
+			xMin = m_pObject->vertices[i].Pos.x;
+		}
+		// Min-Max for Y
+		if (m_pObject->vertices[i].Pos.y > yMax)
+		{
+			yMax = m_pObject->vertices[i].Pos.y;
+		}
+		else if (m_pObject->vertices[i].Pos.y < yMin)
+		{
+			yMin = m_pObject->vertices[i].Pos.y;
+		}
+		// Min-Max for Z
+		if (m_pObject->vertices[i].Pos.z > zMax)
+		{
+			zMax = m_pObject->vertices[i].Pos.z;
+		}
+		else if (m_pObject->vertices[i].Pos.z < zMin)
+		{
+			zMin = m_pObject->vertices[i].Pos.z;
+		}
+	}
+
+	float x = (xMax + xMin) / 2;
+	float y = (yMax + yMin) / 2;
+	float z = (zMax + zMin) / 2;
+
+	boundingSpereCentre = XMVectorSet(x, y, z, 0.0f);
+}
+
+void Model::CalculateBoundingSphereRadius()
+{
+	float distanceSquared = 0.0f;
+
+	for (int i = 0; i < m_pObject->numverts; i++)
+	{
+		float distance = pow((m_pObject->vertices[i].Pos.x - boundingSpereCentre.x), 2) + pow((m_pObject->vertices[i].Pos.y - boundingSpereCentre.y), 2) + pow((m_pObject->vertices[i].Pos.z - boundingSpereCentre.z), 2);
+		if (distance > distanceSquared)
+		{
+			distanceSquared = distance;
+		}
+	}
+
+	boundingSphereRadiusSquared = distanceSquared;
+}
+
+void Model::CalculateWorldMatrix()
+{
 	world = XMMatrixIdentity();
 	world *= XMMatrixScaling(xScale, yScale, zScale);
 	world *= XMMatrixRotationX(XMConvertToRadians(xAngle));
 	world *= XMMatrixRotationY(XMConvertToRadians(yAngle));
 	world *= XMMatrixRotationZ(XMConvertToRadians(zAngle));
-	
 	world *= XMMatrixTranslation(xPos, yPos, zPos);
-	
+}
+
+void Model::Draw(XMMATRIX *view, XMMATRIX *projection, Light* light)
+{
+	XMMATRIX transpose;
+	transpose = XMMatrixTranspose(world);
+
 	// Set the values for the constant buffer
 	MODEL_CONSTANT_BUFFER model_cb_values;
+	model_cb_values.directionalLightVector = XMVector3Transform(light->GetVector(), transpose);
+	model_cb_values.directionalLightVector = XMVector3Normalize(model_cb_values.directionalLightVector);
+	model_cb_values.directionalLightColour = light->GetColour();
+	model_cb_values.ambientLightColour = light->GetAmbientColour();
 	model_cb_values.WorldViewProjection = world * (*view) * (*projection);
 
 	// Upload the values for the constant buffer
@@ -161,11 +243,31 @@ void Model::Draw(XMMATRIX *view, XMMATRIX *projection)
 	m_pObject->Draw();
 }
 
+void Model::SetPosition(XMVECTOR position)
+{
+	xPos = position.x;
+	yPos = position.y;
+	zPos = position.z;
+
+	CalculateWorldMatrix();
+}
+
 void Model::SetPosition(float x, float y, float z)
 {
 	xPos = x;
 	yPos = y;
 	zPos = z;
+
+	CalculateWorldMatrix();
+}
+
+void Model::SetRotation(XMVECTOR rotation)
+{
+	xAngle = rotation.x;
+	yAngle = rotation.y;
+	zAngle = rotation.z;
+
+	CalculateWorldMatrix();
 }
 
 void Model::SetRotation(float x, float y, float z)
@@ -173,6 +275,17 @@ void Model::SetRotation(float x, float y, float z)
 	xAngle = x;
 	yAngle = y;
 	zAngle = z;
+
+	CalculateWorldMatrix();
+}
+
+void Model::SetScale(XMVECTOR scale)
+{
+	xScale = scale.x;
+	yScale = scale.y;
+	zScale = scale.z;
+
+	CalculateWorldMatrix();
 }
 
 void Model::SetScale(float x, float y, float z)
@@ -180,6 +293,62 @@ void Model::SetScale(float x, float y, float z)
 	xScale = x;
 	yScale = y;
 	zScale = z;
+
+	CalculateWorldMatrix();
+}
+
+void Model::Rotate(XMVECTOR axis, float degrees)
+{
+	xAngle = xAngle * axis.x + degrees;
+	yAngle = yAngle * axis.y + degrees;
+	zAngle = zAngle * axis.z + degrees;
+
+	CalculateWorldMatrix();
+}
+
+void Model::LookAtXZ(XMVECTOR position)
+{
+	
+}
+
+XMVECTOR Model::GetBoundingSphereWorldSpacePosition()
+{
+	XMVECTOR offset = XMVectorSet(boundingSpereCentre.x, boundingSpereCentre.y, boundingSpereCentre.z, 0.0f);
+
+	return XMVector3Transform(offset, world);
+}
+
+float Model::GetBoundingSphereRadius()
+{
+	float scaleMax = xScale;
+	if (yScale > scaleMax)
+	{
+		scaleMax = yScale;
+	}
+	if (zScale > scaleMax)
+	{
+		scaleMax = zScale;
+	}
+	return boundingSphereRadiusSquared * scaleMax;
+}
+
+bool Model::CheckCollision(Model* model)
+{
+	if (model == this)
+	{
+		return false;
+	}
+
+	XMVECTOR thisBoundingSpherePosition = GetBoundingSphereWorldSpacePosition();
+	XMVECTOR modelBoundingSpherePosition = model->GetBoundingSphereWorldSpacePosition();
+
+	float distanceSquared = pow((modelBoundingSpherePosition.x - thisBoundingSpherePosition.x), 2) + pow((modelBoundingSpherePosition.y - thisBoundingSpherePosition.y), 2) + pow((modelBoundingSpherePosition.z - thisBoundingSpherePosition.z), 2);
+
+	if (distanceSquared < (model->GetBoundingSphereRadius() + GetBoundingSphereRadius()))
+	{
+		return true;
+	}
+	return false;
 }
 
 XMVECTOR Model::GetPosition()
