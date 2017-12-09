@@ -30,6 +30,12 @@
     <ClCompile Include="light.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="inputmanager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders.hlsl" />
@@ -46,6 +52,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="light.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="inputmanager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

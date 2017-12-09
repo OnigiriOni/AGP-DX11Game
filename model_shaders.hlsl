@@ -21,10 +21,12 @@ VOut ModelVS(float4 position : POSITION, float2 texcoord : TEXCOORD, float3 norm
 	VOut output;
 
 	//float4 default_color = {1, 1, 1, 1};
+	//output.color = default_color;
+
 	float diffuse_amount = dot(directionalLightVector, normal);
 	diffuse_amount = saturate(diffuse_amount);
-	//output.color = default_color;
 	output.color = ambientLightColour + (directionalLightColour * diffuse_amount);
+	
 	output.position = mul(WVPMatrix, position);
 	output.texcoord = texcoord;
 

@@ -5,12 +5,12 @@
 #include <stdio.h>
 int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf;
 
-#include <time.h>
-
 #define _XM_NO_INTRINSICS_
 #define XM_NO_ALIGNMENT
 #include <xnamath.h>
 
+
+#include "inputmanager.h"
 #include "camera.h"
 #include "model.h"
 #include "light.h"
@@ -74,6 +74,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if (FAILED(InitialiseWindow(hInstance, nCmdShow)))
 	{
 		DXTRACE_MSG("Failed to create Window");
+		return 0;
+	}
+
+	if (FAILED(InitialiseInput(g_hInst, g_hWnd)))
+	{
+		DXTRACE_MSG("Failed to initialise DirectInput8");
 		return 0;
 	}
 
@@ -166,10 +172,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 
-	case WM_KEYDOWN:
-		if (wParam == VK_ESCAPE)
-			DestroyWindow(g_hWnd);
-		return 0;
+	//case WM_KEYDOWN:
+	//	if (wParam == VK_ESCAPE)
+	//		DestroyWindow(g_hWnd);
+	//	return 0;
 
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -309,6 +315,12 @@ void ShutdownD3D()
 {
 	delete g_pModel;
 	delete g_pCamera;
+	if (g_pKeyboardDevice)
+	{
+		g_pKeyboardDevice->Unacquire();
+		g_pKeyboardDevice->Release();
+	}
+	if (g_pDirectInput) g_pDirectInput->Release();
 	if (g_pTexture0) g_pTexture0->Release();
 	if (g_pSampler0) g_pSampler0->Release();
 	if (g_pZBuffer) g_pZBuffer->Release();
@@ -373,6 +385,12 @@ HRESULT InitialiseGraphics()
 //////////////////////////////////////////////////////////////////////////////////////
 void RenderFrame(void)
 {
+	ReadInputStates();
+	if (IsKeyPressed(DIK_W))
+	{
+		g_pCamera->Forward(0.001f);
+	}
+
 	//int newTime = timeGetTime();
 
 	XMMATRIX projection, view;
