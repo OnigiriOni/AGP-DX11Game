@@ -16,17 +16,9 @@ Model::Model(ID3D11Device* device, ID3D11DeviceContext* context)
 	m_pD3DDevice = device;
 	m_pImmediateContext = context;
 
-	xAngle = 0.0;
-	yAngle = 0.0;
-	zAngle = 0.0;
-	xScale = 1.0;
-	yScale = 1.0;
-	zScale = 1.0;
-	xPos = 0.0;
-	yPos = 0.0;
-	zPos = 0.0;
-
-	CalculateWorldMatrix();
+	rotation = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	scale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
+	position  = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 HRESULT Model::LoadObjModel(char* filename)
@@ -212,15 +204,21 @@ void Model::CalculateBoundingSphereRadius()
 void Model::CalculateWorldMatrix()
 {
 	world = XMMatrixIdentity();
-	world *= XMMatrixScaling(xScale, yScale, zScale);
-	world *= XMMatrixRotationX(XMConvertToRadians(xAngle));
-	world *= XMMatrixRotationY(XMConvertToRadians(yAngle));
-	world *= XMMatrixRotationZ(XMConvertToRadians(zAngle));
-	world *= XMMatrixTranslation(xPos, yPos, zPos);
+
+	//world *= XMMatrixRotationQuaternion(XMQuaternionIdentity());
+
+	// current
+	world *= XMMatrixScalingFromVector(scale);
+	world *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	world *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	world *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	world *= XMMatrixTranslationFromVector(position);
 }
 
 void Model::Draw(XMMATRIX *view, XMMATRIX *projection, Light* light)
 {
+	CalculateWorldMatrix();
+
 	XMMATRIX transpose;
 	transpose = XMMatrixTranspose(world);
 
@@ -236,79 +234,66 @@ void Model::Draw(XMMATRIX *view, XMMATRIX *projection, Light* light)
 	m_pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
 	m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, 0, &model_cb_values, 0, 0);
 
-	m_pImmediateContext->VSSetShader(m_pVShader, 0, 0);
-	m_pImmediateContext->PSSetShader(m_pPShader, 0, 0);
-	m_pImmediateContext->IASetInputLayout(m_pInputLayout);
+	//m_pImmediateContext->VSSetShader(m_pVShader, 0, 0);
+	//m_pImmediateContext->PSSetShader(m_pPShader, 0, 0);
+	//m_pImmediateContext->IASetInputLayout(m_pInputLayout);
 	
 	m_pObject->Draw();
 }
 
 void Model::SetPosition(XMVECTOR position)
 {
-	xPos = position.x;
-	yPos = position.y;
-	zPos = position.z;
-
-	CalculateWorldMatrix();
+	Model::position = position;
 }
 
 void Model::SetPosition(float x, float y, float z)
 {
-	xPos = x;
-	yPos = y;
-	zPos = z;
-
-	CalculateWorldMatrix();
+	position = XMVectorSet(x, y, z, 0.0f);
 }
 
 void Model::SetRotation(XMVECTOR rotation)
 {
-	xAngle = rotation.x;
-	yAngle = rotation.y;
-	zAngle = rotation.z;
-
-	CalculateWorldMatrix();
+	Model::rotation = rotation;
 }
 
 void Model::SetRotation(float x, float y, float z)
 {
-	xAngle = x;
-	yAngle = y;
-	zAngle = z;
-
-	CalculateWorldMatrix();
+	rotation = XMVectorSet(x, y, z, 0.0f);
 }
 
 void Model::SetScale(XMVECTOR scale)
 {
-	xScale = scale.x;
-	yScale = scale.y;
-	zScale = scale.z;
-
-	CalculateWorldMatrix();
+	Model::scale = scale;
 }
 
 void Model::SetScale(float x, float y, float z)
 {
-	xScale = x;
-	yScale = y;
-	zScale = z;
-
-	CalculateWorldMatrix();
+	scale = XMVectorSet(x, y, z, 0.0f);
 }
 
+// Rotates the model around an (single) axis in world space by degrees
 void Model::Rotate(XMVECTOR axis, float degrees)
 {
-	xAngle = xAngle * axis.x + degrees;
-	yAngle = yAngle * axis.y + degrees;
-	zAngle = zAngle * axis.z + degrees;
+	axis = XMVector3Normalize(axis);
 
-	CalculateWorldMatrix();
+	rotation.x += axis.x * degrees;
+	rotation.y += axis.y * degrees;
+	rotation.z += axis.z * degrees;
 }
 
-void Model::LookAtXZ(XMVECTOR position)
+void Model::LookAtXZ(XMVECTOR point)
 {
-	
+	float angle = atan2((point.x - position.x),(point.z - position.z)) * (180.0f / XM_PI);
+	rotation.y = angle;
+}
+
+void Model::MoveForward(float distance)
+{
+	float dx = sin(rotation.y * (XM_PI / 180.0));
+	float dz = cos(rotation.y * (XM_PI / 180.0));
+
+	position.x += distance * dx;
+	position.z += distance * dz;
 }
 
 XMVECTOR Model::GetBoundingSphereWorldSpacePosition()
@@ -320,14 +305,14 @@ XMVECTOR Model::GetBoundingSphereWorldSpacePosition()
 
 float Model::GetBoundingSphereRadius()
 {
-	float scaleMax = xScale;
-	if (yScale > scaleMax)
+	float scaleMax = scale.x;
+	if (scale.y > scaleMax)
 	{
-		scaleMax = yScale;
+		scaleMax = scale.y;
 	}
-	if (zScale > scaleMax)
+	if (scale.z > scaleMax)
 	{
-		scaleMax = zScale;
+		scaleMax = scale.z;
 	}
 	return boundingSphereRadiusSquared * scaleMax;
 }
@@ -353,15 +338,15 @@ bool Model::CheckCollision(Model* model)
 
 XMVECTOR Model::GetPosition()
 {
-	return XMVectorSet(xPos, yPos,  zPos, 0.0);
+	return position;
 }
 
 XMVECTOR Model::GetRotation()
 {
-	return XMVectorSet(xAngle, yAngle, zAngle, 0.0);
+	return rotation;
 }
 
 XMVECTOR Model::GetScale()
 {
-	return XMVectorSet(xScale, yScale, zScale, 0.0);
+	return scale;
 }

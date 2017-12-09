@@ -61,6 +61,11 @@ void Camera::Up(float distance)
 	this->y += distance;
 }
 
+void Camera::Right(float d)
+{
+	x += d;
+}
+
 XMMATRIX Camera::CalculateViewMatrix()
 {
 	dx = sin(rotation * (XM_PI / 180.0));

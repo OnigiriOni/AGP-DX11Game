@@ -26,6 +26,7 @@ public:
 	void Rotate(float degree);
 	void Forward(float distance);
 	void Up(float distance);
+	void Right(float d);
 	XMMATRIX CalculateViewMatrix();
 	XMVECTOR GetPosition();
 };

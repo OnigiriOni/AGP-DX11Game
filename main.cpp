@@ -338,7 +338,11 @@ HRESULT InitialiseGraphics()
 	g_pModelSphere = new Model(g_pD3DDevice, g_pImmediateContext);
 	g_pModelSphere->LoadObjModel("assets/pillar.obj");
 	g_pModelSphere->SetPosition(0.0f, 0.0f, 0.0f);
+	//g_pModelSphere->SetRotation(0.0f, 0.0f, 0.0f);
 	g_pModelSphere->SetScale(0.2f, 0.2f, 0.2f);
+
+
+
 
 	g_pLight = new Light();
 
@@ -389,13 +393,18 @@ void RenderFrame(void)
 
 
 	//g_pModelSphere->CheckCollision(g_pModel);
-	//g_pModelSphere->Rotate(XMVectorSet(0.0f, 1.0f, 1.0f, 0.0f), 0.002f);
+	//g_pModelSphere->Rotate(XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f), 0.003f);
+	//g_pModelSphere->MoveForward(0.001f);
+	g_pModelSphere->LookAtXZ(g_pCamera->GetPosition());
 
 
 	// RENDER HERE
 	g_pModel->Draw(&view, &projection, g_pLight);
 	g_pModelSphere->Draw(&view, &projection, g_pLight);
 
+	//g_pCamera->Right(0.001f);
+	//g_pCamera->Rotate(-0.001f);
+	
 	
 
 	// Display what has just been rendered

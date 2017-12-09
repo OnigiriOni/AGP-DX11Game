@@ -14,21 +14,12 @@ private:
 	ID3D11Buffer*			m_pConstantBuffer;
 
 	XMMATRIX				world;
-	// rotation
-	float xAngle;
-	float yAngle;
-	float zAngle;
-	// scale
-	float xScale;
-	float yScale;
-	float zScale;
-	// position
-	float xPos;
-	float yPos;
-	float zPos;
-	// collision
-	XMVECTOR boundingSpereCentre;
-	float boundingSphereRadiusSquared;
+	XMVECTOR				rotation;
+	XMVECTOR				scale;
+	XMVECTOR				position;
+
+	XMVECTOR				boundingSpereCentre;
+	float					boundingSphereRadiusSquared;
 
 	// Methods
 	HRESULT LoadShaders();
@@ -49,6 +40,7 @@ public:
 	void SetScale(float x, float y, float z);
 	void Rotate(XMVECTOR axis, float degrees);
 	void LookAtXZ(XMVECTOR position);
+	void MoveForward(float distance);
 	XMVECTOR GetBoundingSphereWorldSpacePosition();
 	float GetBoundingSphereRadius();
 	bool CheckCollision(Model* model);
