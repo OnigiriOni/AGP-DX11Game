@@ -36,6 +36,9 @@
     <ClCompile Include="inputmanager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="gameobject.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders.hlsl" />
@@ -58,6 +61,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="inputmanager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="gameobject.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

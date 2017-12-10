@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="inputmanager.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="gameobject.h" />
     <ClInclude Include="inputmanager.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="model.h" />

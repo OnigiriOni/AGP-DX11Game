@@ -11,6 +11,7 @@ int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf
 
 
 #include "inputmanager.h"
+#include "gameobject.h"
 #include "camera.h"
 #include "model.h"
 #include "light.h"
@@ -35,6 +36,8 @@ ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 ID3D11ShaderResourceView*	g_pTexture0;
 ID3D11SamplerState*			g_pSampler0;
 
+GameObject*					g_pInPillar;
+GameObject*					g_pPillar;
 Camera*						g_pCamera;
 Model*						g_pModel;
 Model*						g_pModelSphere;
@@ -342,18 +345,16 @@ HRESULT InitialiseGraphics()
 	g_pCamera = new Camera(0.0f, 0.0f, -50.0f, 0.0f);
 
 	// Load the model
-	g_pModel = new Model(g_pD3DDevice, g_pImmediateContext);
-	g_pModel->LoadObjModel("assets/Sphere.obj");
-	g_pModel->SetPosition(6.0f, 0.0f, 0.0f);
-	//g_pModel->SetScale(1.0f, 0.5f, 1.0f);
+	g_pPillar = new GameObject();
+	g_pPillar->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/pillar.obj");
+	g_pPillar->scale = XMVectorSet(0.1f, 0.1f, 0.1f, 0.0f);
+	g_pPillar->position = XMVectorSet(15.0f, 0.0f, 0.0f, 0.0f);
 
-	g_pModelSphere = new Model(g_pD3DDevice, g_pImmediateContext);
-	g_pModelSphere->LoadObjModel("assets/pillar.obj");
-	g_pModelSphere->SetPosition(0.0f, 0.0f, 0.0f);
-	//g_pModelSphere->SetRotation(0.0f, 0.0f, 0.0f);
-	g_pModelSphere->SetScale(0.2f, 0.2f, 0.2f);
+	g_pInPillar = new GameObject();
+	g_pInPillar->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/pillar.obj");
+	g_pInPillar->scale = XMVectorSet(0.2f, 0.2f, 0.2f, 0.0f);
 
-
+	g_pPillar->AddChildren(g_pInPillar);
 
 
 	g_pLight = new Light();
@@ -388,7 +389,23 @@ void RenderFrame(void)
 	ReadInputStates();
 	if (IsKeyPressed(DIK_W))
 	{
-		g_pCamera->Forward(0.001f);
+		//g_pCamera->Forward(0.001f);
+		g_pPillar->MoveForward(0.001f);
+	}
+	if (IsKeyPressed(DIK_S))
+	{
+		//g_pCamera->Forward(-0.001f);
+		g_pPillar->Rotate(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), 0.005f);
+	}
+	if (IsKeyPressed(DIK_A))
+	{
+		//g_pCamera->Right(-0.001f);
+		g_pInPillar->MoveForward(0.001f);
+	}
+	if (IsKeyPressed(DIK_D))
+	{
+		//g_pCamera->Right(0.001f);
+		g_pInPillar->Rotate(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), 0.005f);
 	}
 
 	//int newTime = timeGetTime();
@@ -411,19 +428,17 @@ void RenderFrame(void)
 
 
 	//g_pModelSphere->CheckCollision(g_pModel);
-	//g_pModelSphere->Rotate(XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f), 0.003f);
 	//g_pModelSphere->MoveForward(0.001f);
-	g_pModelSphere->LookAtXZ(g_pCamera->GetPosition());
 
+	//g_pPillar->LookAtXZ(g_pCamera->GetPosition());
+	//g_pPillar->Rotate(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), 0.003f);
 
 	// RENDER HERE
-	g_pModel->Draw(&view, &projection, g_pLight);
-	g_pModelSphere->Draw(&view, &projection, g_pLight);
+	g_pPillar->Update(&XMMatrixIdentity(), &view, &projection, g_pLight);
+	//TODO: g_pInPillar is, for what ever reason, no child object 
+	g_pInPillar->Update(&XMMatrixIdentity(), &view, &projection, g_pLight);
 
-	//g_pCamera->Right(0.001f);
-	//g_pCamera->Rotate(-0.001f);
-	
-	
+
 
 	// Display what has just been rendered
 	g_pSwapChain->Present(0, 0);

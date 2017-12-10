@@ -2,7 +2,8 @@
 
 #include "camera.h"
 
-class Player{
+class Player
+{
 private:
 	Camera*			mainCamera;
 	// Methods
