@@ -12,11 +12,7 @@ void GameObject::CalculateWorldMatrix()
 
 GameObject::GameObject()
 {
-	g_pModel = NULL;
 
-	scale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
-	rotation = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void GameObject::SetModel(ID3D11Device* device, ID3D11DeviceContext* context, char* filename)
@@ -43,7 +39,7 @@ bool GameObject::RemoveChildren(GameObject* children)
 	return false;
 }
 
-void GameObject::Update(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* light)
+void GameObject::Execute(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* light)
 {
 	CalculateWorldMatrix();
 
@@ -51,10 +47,17 @@ void GameObject::Update(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, L
 
 	if (g_pModel) g_pModel->Draw(&g_World, view, projection, light);
 
+	// TODO: Scale gets transported through all child objects, fix this
 	for (int i = 0; i< g_Children.size(); i++)
 	{
-		g_Children[i]->Update(&g_World, view, projection, light);
+		g_Children[i]->Execute(&g_World, view, projection, light);
+		g_Children[i]->Update();
 	}
+}
+
+void GameObject::Update()
+{
+	
 }
 
 void GameObject::LookAtXZ(XMVECTOR point)
@@ -80,4 +83,9 @@ void GameObject::MoveForward(float distance)
 
 	position.x += distance * dx;
 	position.z += distance * dz;
+}
+
+void GameObject::MoveRight(float distance)
+{
+	position.x += distance;
 }

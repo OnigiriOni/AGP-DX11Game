@@ -1,4 +1,5 @@
 #pragma once
+
 #include <d3d11.h>
 #include <math.h>
 
@@ -6,27 +7,42 @@
 #define XM_NO_ALIGNMENT
 #include <xnamath.h>
 
-class Camera
+#include "inputmanager.h"
+#include "gameobject.h"
+
+class Camera : public GameObject
 {
 private:
-	float x, y ,z;
-	float dx, dz;
-	float rotation;
-	XMVECTOR position;
-	XMVECTOR lookat;
-	XMVECTOR up;
-	XMMATRIX view;
+	// Variables
+	XMVECTOR				forward;
+	XMVECTOR				up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMMATRIX				view;
+	XMMATRIX				projection;
+
+	float					fieldOfView = 70.0f;
+	float					aspectRatio = 640.0f / 480.0f;
+	float					nearPlane = 1.0f;
+	float					farPlane = 200.0f;
+	
+	// Methods
+	void CalculateProjectionMatrix();
+	void CalculateViewMatrix();
 
 public:
+	// Methods
 	Camera();
 	Camera(XMVECTOR position);
-	Camera(XMVECTOR position, float rotation);
-	Camera(float x, float y, float z, float rotation);
-	~Camera();
-	void Rotate(float degree);
-	void Forward(float distance);
-	void Up(float distance);
-	void Right(float d);
-	XMMATRIX CalculateViewMatrix();
-	XMVECTOR GetPosition();
+	Camera(XMVECTOR position, XMVECTOR forward);
+
+	XMMATRIX GetProjectionMatrix();
+	XMMATRIX GetViewMatrix();
+
+	void Update();
+
+	void PlayerInput();
+
+	void SetFieldOfView(float newFieldOfView);
+	void SetAspectRatio(float screenWidth, float screenHeight);
+	void SetNearPlane(float newNearPlane);
+	void SetFarPlane(float newFarPlane);
 };
