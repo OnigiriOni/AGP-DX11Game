@@ -11,6 +11,8 @@ int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf
 
 
 #include "inputmanager.h"
+#include "gameobject.h"
+#include "player.h"
 #include "camera.h"
 #include "model.h"
 #include "light.h"
@@ -34,6 +36,13 @@ ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 
 ID3D11ShaderResourceView*	g_pTexture0;
 ID3D11SamplerState*			g_pSampler0;
+
+GameObject*					g_pRootNode;
+GameObject*					g_pInPillar;
+GameObject*					g_pPillar;
+GameObject*					g_pTest;
+
+//Player*						g_pPlayer;
 
 Camera*						g_pCamera;
 Model*						g_pModel;
@@ -339,21 +348,37 @@ HRESULT InitialiseGraphics()
 	HRESULT hr = S_OK;
 
 	// Load the camera
-	g_pCamera = new Camera(0.0f, 0.0f, -50.0f, 0.0f);
+	g_pCamera = new Camera(XMVectorSet(0.0f, 0.0f, -50.0f, 0.0f));
+
+	// Player
+	//g_pPlayer = new Player();
+	//g_pPlayer->SetCamera(g_pCamera);
+	//g_pPlayer->position = XMVectorSet(0.0f, 0.0f, -35.0f, 0.0f);
+	//g_pPlayer->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj");
+	//g_pPlayer->AddChildren(g_pCamera);
+
+	g_pRootNode = new GameObject();
+
+	g_pTest = new GameObject();
+	g_pTest->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj");
+	g_pTest->position = XMVectorSet(-60.0f, 0.0f, 0.0f, 0.0f);
 
 	// Load the model
-	g_pModel = new Model(g_pD3DDevice, g_pImmediateContext);
-	g_pModel->LoadObjModel("assets/Sphere.obj");
-	g_pModel->SetPosition(6.0f, 0.0f, 0.0f);
-	//g_pModel->SetScale(1.0f, 0.5f, 1.0f);
+	g_pPillar = new GameObject();
+	g_pPillar->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/pillar.obj");
+	g_pPillar->scale = XMVectorSet(0.1f, 0.1f, 0.1f, 0.0f);
+	g_pPillar->position = XMVectorSet(15.0f, 0.0f, 0.0f, 0.0f);
 
-	g_pModelSphere = new Model(g_pD3DDevice, g_pImmediateContext);
-	g_pModelSphere->LoadObjModel("assets/pillar.obj");
-	g_pModelSphere->SetPosition(0.0f, 0.0f, 0.0f);
-	//g_pModelSphere->SetRotation(0.0f, 0.0f, 0.0f);
-	g_pModelSphere->SetScale(0.2f, 0.2f, 0.2f);
+	g_pInPillar = new GameObject();
+	g_pInPillar->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/pillar.obj");
+	g_pInPillar->scale = XMVectorSet(0.2f, 0.2f, 0.2f, 0.0f);
 
 
+	g_pRootNode->AddChildren(g_pCamera);
+	g_pRootNode->AddChildren(g_pPillar);
+	g_pRootNode->AddChildren(g_pInPillar);
+	g_pInPillar->AddChildren(g_pTest);
+	//g_pPillar->AddChildren(g_pInPillar);
 
 
 	g_pLight = new Light();
@@ -386,16 +411,15 @@ HRESULT InitialiseGraphics()
 void RenderFrame(void)
 {
 	ReadInputStates();
-	if (IsKeyPressed(DIK_W))
+	if (IsKeyPressed(DIK_H))
 	{
-		g_pCamera->Forward(0.001f);
+		g_pInPillar->MoveForward(0.002f);
 	}
 
-	//int newTime = timeGetTime();
-
-	XMMATRIX projection, view;
-	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0), 640.0 / 480.0, 1.0, 200.0);
-	view = g_pCamera->CalculateViewMatrix();
+	if (IsKeyPressed(DIK_B))
+	{
+		g_pInPillar->Rotate(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), -0.01f);
+	}
 
 	// Select which primitive type to use
 	g_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -411,23 +435,18 @@ void RenderFrame(void)
 
 
 	//g_pModelSphere->CheckCollision(g_pModel);
-	//g_pModelSphere->Rotate(XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f), 0.003f);
-	//g_pModelSphere->MoveForward(0.001f);
-	g_pModelSphere->LookAtXZ(g_pCamera->GetPosition());
+
 
 
 	// RENDER HERE
-	g_pModel->Draw(&view, &projection, g_pLight);
-	g_pModelSphere->Draw(&view, &projection, g_pLight);
+	g_pRootNode->Execute(&XMMatrixIdentity(), &g_pCamera->GetViewMatrix(), &g_pCamera->GetProjectionMatrix(), g_pLight);
 
-	//g_pCamera->Right(0.001f);
-	//g_pCamera->Rotate(-0.001f);
-	
-	
+
+
+
+
+
 
 	// Display what has just been rendered
 	g_pSwapChain->Present(0, 0);
-
-	//deltaTime = (float)(newTime - oldTime) / 1000;
-	//oldTime = newTime;
 }

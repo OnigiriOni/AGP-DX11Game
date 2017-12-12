@@ -11,14 +11,12 @@ struct MODEL_CONSTANT_BUFFER
 };										// TOTAL SIZE = 112 bytes				
 int model_cb_byteWidth = 112;	// The size of the combined buffer bytes. Always update after a const buffer struct change
 
-Model::Model(ID3D11Device* device, ID3D11DeviceContext* context)
+Model::Model(ID3D11Device* device, ID3D11DeviceContext* context, char* filename)
 {
 	m_pD3DDevice = device;
 	m_pImmediateContext = context;
 
-	rotation = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	scale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
-	position  = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	LoadObjModel(filename);
 }
 
 HRESULT Model::LoadObjModel(char* filename)
@@ -201,26 +199,10 @@ void Model::CalculateBoundingSphereRadius()
 	boundingSphereRadiusSquared = distanceSquared;
 }
 
-void Model::CalculateWorldMatrix()
+void Model::Draw(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* light)
 {
-	world = XMMatrixIdentity();
-
-	//world *= XMMatrixRotationQuaternion(XMQuaternionIdentity());
-
-	// current
-	world *= XMMatrixScalingFromVector(scale);
-	world *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	world *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	world *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	world *= XMMatrixTranslationFromVector(position);
-}
-
-void Model::Draw(XMMATRIX *view, XMMATRIX *projection, Light* light)
-{
-	CalculateWorldMatrix();
-
 	XMMATRIX transpose;
-	transpose = XMMatrixTranspose(world);
+	transpose = XMMatrixTranspose(*world);
 
 	// Set the values for the constant buffer
 	MODEL_CONSTANT_BUFFER model_cb_values;
@@ -228,81 +210,23 @@ void Model::Draw(XMMATRIX *view, XMMATRIX *projection, Light* light)
 	model_cb_values.directionalLightVector = XMVector3Normalize(model_cb_values.directionalLightVector);
 	model_cb_values.directionalLightColour = light->GetColour();
 	model_cb_values.ambientLightColour = light->GetAmbientColour();
-	model_cb_values.WorldViewProjection = world * (*view) * (*projection);
+	model_cb_values.WorldViewProjection = (*world) * (*view) * (*projection);
 
 	// Upload the values for the constant buffer
 	m_pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
 	m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, 0, &model_cb_values, 0, 0);
 
-	//m_pImmediateContext->VSSetShader(m_pVShader, 0, 0);
-	//m_pImmediateContext->PSSetShader(m_pPShader, 0, 0);
-	//m_pImmediateContext->IASetInputLayout(m_pInputLayout);
-	
 	m_pObject->Draw();
 }
-
-void Model::SetPosition(XMVECTOR position)
-{
-	Model::position = position;
-}
-
-void Model::SetPosition(float x, float y, float z)
-{
-	position = XMVectorSet(x, y, z, 0.0f);
-}
-
-void Model::SetRotation(XMVECTOR rotation)
-{
-	Model::rotation = rotation;
-}
-
-void Model::SetRotation(float x, float y, float z)
-{
-	rotation = XMVectorSet(x, y, z, 0.0f);
-}
-
-void Model::SetScale(XMVECTOR scale)
-{
-	Model::scale = scale;
-}
-
-void Model::SetScale(float x, float y, float z)
-{
-	scale = XMVectorSet(x, y, z, 0.0f);
-}
-
-// Rotates the model around an (single) axis in world space by degrees
-void Model::Rotate(XMVECTOR axis, float degrees)
-{
-	axis = XMVector3Normalize(axis);
-
-	rotation.x += axis.x * degrees;
-	rotation.y += axis.y * degrees;
-	rotation.z += axis.z * degrees;
-}
-
-void Model::LookAtXZ(XMVECTOR point)
-{
-	float angle = atan2((point.x - position.x),(point.z - position.z)) * (180.0f / XM_PI);
-	rotation.y = angle;
-}
-
-void Model::MoveForward(float distance)
-{
-	float dx = sin(rotation.y * (XM_PI / 180.0));
-	float dz = cos(rotation.y * (XM_PI / 180.0));
-
-	position.x += distance * dx;
-	position.z += distance * dz;
-}
-
+/*
 XMVECTOR Model::GetBoundingSphereWorldSpacePosition()
 {
 	XMVECTOR offset = XMVectorSet(boundingSpereCentre.x, boundingSpereCentre.y, boundingSpereCentre.z, 0.0f);
 
-	return XMVector3Transform(offset, world);
+	return XMVector3Transform(offset, *world);
 }
-
+*/
+/*
 float Model::GetBoundingSphereRadius()
 {
 	float scaleMax = scale.x;
@@ -316,7 +240,8 @@ float Model::GetBoundingSphereRadius()
 	}
 	return boundingSphereRadiusSquared * scaleMax;
 }
-
+*/
+/*
 bool Model::CheckCollision(Model* model)
 {
 	if (model == this)
@@ -335,18 +260,4 @@ bool Model::CheckCollision(Model* model)
 	}
 	return false;
 }
-
-XMVECTOR Model::GetPosition()
-{
-	return position;
-}
-
-XMVECTOR Model::GetRotation()
-{
-	return rotation;
-}
-
-XMVECTOR Model::GetScale()
-{
-	return scale;
-}
+*/
