@@ -9,10 +9,8 @@ int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf
 #define XM_NO_ALIGNMENT
 #include <xnamath.h>
 
-
 #include "inputmanager.h"
 #include "gameobject.h"
-#include "player.h"
 #include "camera.h"
 #include "model.h"
 #include "light.h"
@@ -34,23 +32,17 @@ ID3D11Buffer*				g_pVertexBuffer;
 ID3D11DepthStencilView*		g_pZBuffer;
 ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 
-ID3D11ShaderResourceView*	g_pTexture0;
-ID3D11SamplerState*			g_pSampler0;
-
 GameObject*					g_pRootNode;
-GameObject*					g_pInPillar;
-GameObject*					g_pPillar;
-GameObject*					g_pTest;
-
-//Player*						g_pPlayer;
+GameObject*					g_pTest4;
+GameObject*					g_pTest3;
+GameObject*					g_pTest2;
+GameObject*					g_pTest1;
 
 Camera*						g_pCamera;
 Model*						g_pModel;
 Model*						g_pModelSphere;
 Light*						g_pLight;
 
-//float						deltaTime;
-//int						oldTime = 0;
 
 // Rename for each tutorial
 char		g_TutorialName[100] = "Slender Maze\0";
@@ -324,14 +316,21 @@ void ShutdownD3D()
 {
 	delete g_pModel;
 	delete g_pCamera;
+	delete g_pRootNode;
+	delete g_pTest3;
+	delete g_pTest2;
+	delete g_pTest1;
+	delete g_pModelSphere;
+	delete g_pLight;
+
 	if (g_pKeyboardDevice)
 	{
 		g_pKeyboardDevice->Unacquire();
 		g_pKeyboardDevice->Release();
 	}
 	if (g_pDirectInput) g_pDirectInput->Release();
-	if (g_pTexture0) g_pTexture0->Release();
-	if (g_pSampler0) g_pSampler0->Release();
+	//if (g_pTexture0) g_pTexture0->Release();
+	//if (g_pSampler0) g_pSampler0->Release();
 	if (g_pZBuffer) g_pZBuffer->Release();
 	if (g_pVertexBuffer) g_pVertexBuffer->Release();
 	if (g_pBackBufferRTView) g_pBackBufferRTView->Release();
@@ -349,58 +348,39 @@ HRESULT InitialiseGraphics()
 
 	// Load the camera
 	g_pCamera = new Camera(XMVectorSet(0.0f, 0.0f, -50.0f, 0.0f));
+	g_pCamera->name = "Player";
+	g_pCamera->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/cube.obj");
 
-	// Player
-	//g_pPlayer = new Player();
-	//g_pPlayer->SetCamera(g_pCamera);
-	//g_pPlayer->position = XMVectorSet(0.0f, 0.0f, -35.0f, 0.0f);
-	//g_pPlayer->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj");
-	//g_pPlayer->AddChildren(g_pCamera);
 
-	g_pRootNode = new GameObject();
 
-	g_pTest = new GameObject();
-	g_pTest->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj");
-	g_pTest->position = XMVectorSet(-60.0f, 0.0f, 0.0f, 0.0f);
+	g_pRootNode = new GameObject("Root");
+	g_pRootNode->position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
 	// Load the model
-	g_pPillar = new GameObject();
-	g_pPillar->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/pillar.obj");
-	g_pPillar->scale = XMVectorSet(0.1f, 0.1f, 0.1f, 0.0f);
-	g_pPillar->position = XMVectorSet(15.0f, 0.0f, 0.0f, 0.0f);
+	g_pTest1 = new GameObject("Test1");
+	g_pTest1->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
+	g_pTest1->position = XMVectorSet(-20.0f, 0.0f, 0.0f, 0.0f);
 
-	g_pInPillar = new GameObject();
-	g_pInPillar->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/pillar.obj");
-	g_pInPillar->scale = XMVectorSet(0.2f, 0.2f, 0.2f, 0.0f);
+	g_pTest2 = new GameObject("Test2");
+	g_pTest2->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
+	g_pTest2->position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
+	g_pTest3 = new GameObject("Test3");
+	g_pTest3->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
+	g_pTest3->position = XMVectorSet(20.0f, 0.0f, 0.0f, 0.0f);
+
+	g_pTest4 = new GameObject("Test4");
+	g_pTest4->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
+	g_pTest4->position = XMVectorSet(-6.0f, 0.0f, 0.0f, 0.0f);
 
 
 	g_pRootNode->AddChildren(g_pCamera);
-	g_pRootNode->AddChildren(g_pPillar);
-	g_pRootNode->AddChildren(g_pInPillar);
-	g_pInPillar->AddChildren(g_pTest);
-	//g_pPillar->AddChildren(g_pInPillar);
-
+	g_pRootNode->AddChildren(g_pTest1);
+	g_pRootNode->AddChildren(g_pTest2);
+	g_pRootNode->AddChildren(g_pTest3);
+	g_pTest2->AddChildren(g_pTest4);
 
 	g_pLight = new Light();
-
-	// Load the texture
-	D3DX11CreateShaderResourceViewFromFile(g_pD3DDevice, "assets/texture.bmp", NULL, NULL, &g_pTexture0, NULL);
-
-	// Create the sampler desc
-	D3D11_SAMPLER_DESC sampler_desc;
-	ZeroMemory(&sampler_desc, sizeof(sampler_desc));
-	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	hr = g_pD3DDevice->CreateSamplerState(&sampler_desc, &g_pSampler0);
-
-	if (FAILED(hr))	// return error code on failure
-	{
-		return hr;
-	}
 
 	return S_OK;
 }
@@ -411,34 +391,31 @@ HRESULT InitialiseGraphics()
 void RenderFrame(void)
 {
 	ReadInputStates();
-	if (IsKeyPressed(DIK_H))
-	{
-		g_pInPillar->MoveForward(0.002f);
-	}
-
 	if (IsKeyPressed(DIK_B))
 	{
-		g_pInPillar->Rotate(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), -0.01f);
+		g_pTest1->MoveRight(0.001f, g_pRootNode);
+	}
+
+	if (IsKeyPressed(DIK_N))
+	{
+		g_pTest2->MoveRight(0.001f, g_pRootNode);
 	}
 
 	// Select which primitive type to use
 	g_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
 
-	g_pImmediateContext->PSSetSamplers(0, 1, &g_pSampler0);
-	g_pImmediateContext->PSSetShaderResources(0, 1, &g_pTexture0);
-
-
 	// Clear the back buffer
 	g_pImmediateContext->ClearRenderTargetView(g_pBackBufferRTView, g_clear_colour);
 	g_pImmediateContext->ClearDepthStencilView(g_pZBuffer, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 
+
 	//g_pModelSphere->CheckCollision(g_pModel);
 
 
-
 	// RENDER HERE
+
 	g_pRootNode->Execute(&XMMatrixIdentity(), &g_pCamera->GetViewMatrix(), &g_pCamera->GetProjectionMatrix(), g_pLight);
 
 

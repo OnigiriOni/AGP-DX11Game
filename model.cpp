@@ -11,12 +11,21 @@ struct MODEL_CONSTANT_BUFFER
 };										// TOTAL SIZE = 112 bytes				
 int model_cb_byteWidth = 112;	// The size of the combined buffer bytes. Always update after a const buffer struct change
 
-Model::Model(ID3D11Device* device, ID3D11DeviceContext* context, char* filename)
+Model::Model(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel)
 {
 	m_pD3DDevice = device;
 	m_pImmediateContext = context;
 
-	LoadObjModel(filename);
+	LoadObjModel(filenameModel);
+}
+
+Model::Model(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel, char* filenameTexture)
+{
+	m_pD3DDevice = device;
+	m_pImmediateContext = context;
+
+	LoadObjModel(filenameModel);
+	SetTexture(filenameTexture);
 }
 
 HRESULT Model::LoadObjModel(char* filename)
@@ -28,6 +37,11 @@ HRESULT Model::LoadObjModel(char* filename)
 		return S_FALSE;
 	}
 	
+	if (FAILED(CreateSampler()))
+	{
+		return S_FALSE;
+	}
+
 	if (FAILED(LoadShaders()))
 	{
 		return S_FALSE;
@@ -140,6 +154,29 @@ HRESULT Model::CreateConstantBuffer()
 	return S_OK;
 }
 
+HRESULT Model::CreateSampler()
+{
+	HRESULT hr = S_OK;
+
+	// Create the sampler desc
+	D3D11_SAMPLER_DESC sampler_desc;
+	ZeroMemory(&sampler_desc, sizeof(sampler_desc));
+	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	hr = m_pD3DDevice->CreateSamplerState(&sampler_desc, &g_pSampler0);
+
+	if (FAILED(hr))	// return error code on failure
+	{
+		return hr;
+	}
+
+	return S_OK;
+}
+
 void Model::CalculateModelCentre()
 {
 	float xMin = 0.0f, yMin = 0.0f, zMin = 0.0f;
@@ -195,8 +232,12 @@ void Model::CalculateBoundingSphereRadius()
 			distanceSquared = distance;
 		}
 	}
+	boundingSphereRadius = sqrt(distanceSquared);
+}
 
-	boundingSphereRadiusSquared = distanceSquared;
+void Model::SetTexture(char* filename)
+{
+	D3DX11CreateShaderResourceViewFromFile(m_pD3DDevice, filename, NULL, NULL, &g_pTexture0, NULL);
 }
 
 void Model::Draw(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* light)
@@ -216,18 +257,20 @@ void Model::Draw(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* l
 	m_pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
 	m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, 0, &model_cb_values, 0, 0);
 
+	m_pImmediateContext->PSSetSamplers(0, 1, &g_pSampler0);
+	m_pImmediateContext->PSSetShaderResources(0, 1, &g_pTexture0);
+
 	m_pObject->Draw();
 }
-/*
-XMVECTOR Model::GetBoundingSphereWorldSpacePosition()
+
+XMVECTOR Model::GetBoundingSphereWorldSpacePosition(XMMATRIX* world)
 {
 	XMVECTOR offset = XMVectorSet(boundingSpereCentre.x, boundingSpereCentre.y, boundingSpereCentre.z, 0.0f);
 
 	return XMVector3Transform(offset, *world);
 }
-*/
-/*
-float Model::GetBoundingSphereRadius()
+
+float Model::GetBoundingSphereRadius(XMVECTOR scale)
 {
 	float scaleMax = scale.x;
 	if (scale.y > scaleMax)
@@ -238,26 +281,5 @@ float Model::GetBoundingSphereRadius()
 	{
 		scaleMax = scale.z;
 	}
-	return boundingSphereRadiusSquared * scaleMax;
+	return boundingSphereRadius * scaleMax;
 }
-*/
-/*
-bool Model::CheckCollision(Model* model)
-{
-	if (model == this)
-	{
-		return false;
-	}
-
-	XMVECTOR thisBoundingSpherePosition = GetBoundingSphereWorldSpacePosition();
-	XMVECTOR modelBoundingSpherePosition = model->GetBoundingSphereWorldSpacePosition();
-
-	float distanceSquared = pow((modelBoundingSpherePosition.x - thisBoundingSpherePosition.x), 2) + pow((modelBoundingSpherePosition.y - thisBoundingSpherePosition.y), 2) + pow((modelBoundingSpherePosition.z - thisBoundingSpherePosition.z), 2);
-
-	if (distanceSquared < (model->GetBoundingSphereRadius() + GetBoundingSphereRadius()))
-	{
-		return true;
-	}
-	return false;
-}
-*/

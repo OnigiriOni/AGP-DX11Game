@@ -12,12 +12,27 @@ void GameObject::CalculateWorldMatrix()
 
 GameObject::GameObject()
 {
-
+	name = "GameObject";
 }
 
-void GameObject::SetModel(ID3D11Device* device, ID3D11DeviceContext* context, char* filename)
+GameObject::GameObject(char* name)
 {
-	g_pModel = new Model(device, context, filename);
+	GameObject::name = name;
+}
+
+void GameObject::SetModel(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel)
+{
+	g_pModel = new Model(device, context, filenameModel);
+}
+
+void GameObject::SetModel(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel, char* filenameTexture)
+{
+	g_pModel = new Model(device, context, filenameModel, filenameTexture);
+}
+
+Model* GameObject::GetModel()
+{
+	return g_pModel;
 }
 
 void GameObject::AddChildren(GameObject* children)
@@ -36,6 +51,70 @@ bool GameObject::RemoveChildren(GameObject* children)
 		}
 		if (g_Children[i]->RemoveChildren(children) == true) return true;
 	}
+	return false;
+}
+
+// TODO: Somewhere in UpdateCollisionTree() or in CheckCollision() are wrong numbers but overall it is working.
+void GameObject::UpdateCollisionTree(XMMATRIX* world, XMVECTOR* scale)
+{
+	CalculateWorldMatrix();
+	g_World *= *world;
+
+	g_WorldScale = GameObject::scale * (*scale);
+
+	if (g_pModel)
+	{
+		g_WorldPosition = g_pModel->GetBoundingSphereWorldSpacePosition(&g_World);
+	}
+
+	for (int i = 0; i< g_Children.size(); i++)
+	{
+		g_Children[i]->UpdateCollisionTree(&g_World, &g_WorldScale);
+	}
+}
+
+bool GameObject::CheckCollision(GameObject* otherGameObject)
+{
+	return CheckCollision(otherGameObject, this);
+}
+
+bool GameObject::CheckCollision(GameObject* otherGameObject, GameObject* thisObject)
+{
+	if (otherGameObject == thisObject)
+	{
+		return false;
+	}
+
+	// Check collision if both GameObjects have models
+	if (g_pModel && otherGameObject->g_pModel)
+	{
+		XMVECTOR otherWorldPosition = otherGameObject->g_WorldPosition;
+
+		float thisBSRadius = g_pModel->GetBoundingSphereRadius(scale);
+		float otherBSRadius = otherGameObject->g_pModel->GetBoundingSphereRadius(otherGameObject->scale);
+
+		float distanceSquared = pow((otherWorldPosition.x - g_WorldPosition.x), 2) + pow((otherWorldPosition.y - g_WorldPosition.y), 2) + pow((otherWorldPosition.z - g_WorldPosition.z), 2);
+		
+		if (distanceSquared < pow(otherBSRadius + thisBSRadius, 2))
+		{
+			return true;
+		}
+	}
+
+	// Iterate through compared tree child nodes
+	for (int i = 0; i< otherGameObject->g_Children.size(); i++)
+	{
+		// Check for collsion against all compared tree child nodes
+		if (CheckCollision(otherGameObject->g_Children[i], thisObject) == true) return true;
+	}
+
+	// Iterate through composite object child nodes
+	for (int i = 0; i< g_Children.size(); i++)
+	{
+		// Check all the child nodes of the composite object against compared tree
+		if (g_Children[i]->CheckCollision(otherGameObject, thisObject) == true) return true;
+	}
+
 	return false;
 }
 
@@ -58,6 +137,16 @@ void GameObject::Execute(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, 
 void GameObject::Update()
 {
 	
+}
+
+XMVECTOR GameObject::GetWorldScale()
+{
+	return g_WorldScale;
+}
+
+XMVECTOR GameObject::GetWorldPosition()
+{
+	return g_WorldPosition;
 }
 
 void GameObject::LookAtXZ(XMVECTOR point)
@@ -87,5 +176,18 @@ void GameObject::MoveForward(float distance)
 
 void GameObject::MoveRight(float distance)
 {
+	MoveRight(distance, this);
+}
+
+void GameObject::MoveRight(float distance, GameObject* rootObject)
+{
+	float oldPosition = position.x;
 	position.x += distance;
+
+	rootObject->UpdateCollisionTree(&XMMatrixIdentity(), &scale);
+
+	if (CheckCollision(rootObject))
+	{
+		position.x = oldPosition;
+	}
 }

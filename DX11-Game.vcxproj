@@ -135,7 +135,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="objfilemodel.cpp" />
-    <ClCompile Include="player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="model_shaders.hlsl">
@@ -165,7 +164,6 @@
     <ClInclude Include="light.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="objfilemodel.h" />
-    <ClInclude Include="player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

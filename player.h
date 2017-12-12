@@ -1,20 +1,14 @@
 #pragma once
 
-#include "inputmanager.h"
 #include "camera.h"
-#include "gameobject.h"
 
-class Player : public GameObject
-{
+class Player{
 private:
-	Camera*				p_pCamera;
+	Camera*			mainCamera;
+	// Methods
+	
 
 public:
 	Player();
-
-	void SetCamera(Camera* camera);
-
 	void Update();
-
-	void Movement();
 };
