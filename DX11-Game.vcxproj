@@ -129,12 +129,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="component.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="inputmanager.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="maze.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="newgameobject.cpp" />
+    <ClCompile Include="newmodel.cpp" />
     <ClCompile Include="objfilemodel.cpp" />
+    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="model_shaders.hlsl">
@@ -159,11 +166,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="component.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="inputmanager.h" />
     <ClInclude Include="light.h" />
+    <ClInclude Include="maze.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="newgameobject.h" />
+    <ClInclude Include="newmodel.h" />
     <ClInclude Include="objfilemodel.h" />
+    <ClInclude Include="renderer.h" />
+    <ClInclude Include="transform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

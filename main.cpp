@@ -9,7 +9,9 @@ int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf
 #define XM_NO_ALIGNMENT
 #include <xnamath.h>
 
+#include "renderer.h"
 #include "inputmanager.h"
+#include "newgameobject.h"
 #include "gameobject.h"
 #include "camera.h"
 #include "model.h"
@@ -32,11 +34,15 @@ ID3D11Buffer*				g_pVertexBuffer;
 ID3D11DepthStencilView*		g_pZBuffer;
 ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 
+Renderer*					renderer;
+
 GameObject*					g_pRootNode;
 GameObject*					g_pTest4;
 GameObject*					g_pTest3;
 GameObject*					g_pTest2;
 GameObject*					g_pTest1;
+
+NewGameObject*				g_pNewGameObject;
 
 Camera*						g_pCamera;
 Model*						g_pModel;
@@ -345,6 +351,14 @@ void ShutdownD3D()
 HRESULT InitialiseGraphics()
 {
 	HRESULT hr = S_OK;
+
+	renderer->GetInstance();
+
+	// Test
+
+	g_pNewGameObject = new NewGameObject("TestObject");
+	g_pNewGameObject->AddComponent<NewModel>();
+
 
 	// Load the camera
 	g_pCamera = new Camera(XMVectorSet(0.0f, 0.0f, -50.0f, 0.0f));
