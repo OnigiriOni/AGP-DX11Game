@@ -1,14 +1,14 @@
 #pragma once
+//#include "game.h"
 #include "component.h"
 #include "Transform.h"
 #include "newmodel.h"
 
+class Game;
 class NewGameObject
 {
 private:
-	ID3D11Device*				g_pD3DDevice;
-	ID3D11DeviceContext*		g_pImmediateContext;
-
+	Game*						game;
 	NewGameObject*				parent = NULL;
 	vector<NewGameObject*>		childrenList;
 	
@@ -21,20 +21,20 @@ public:
 	bool						isEnabled = true;
 
 	// Methods
-	NewGameObject();
-	NewGameObject(char* name);
-	NewGameObject(char* name, XMVECTOR position);
+	NewGameObject(Game* game);
+	NewGameObject(Game* game, char* name);
+	NewGameObject(Game* game, char* name, XMVECTOR position);
 
-	//void AddParent(NewGameObject* parent);
-	//bool RemoveParent(NewGameObject* parent);
-	//NewGameObject* GetParent();
+	bool AddParent(NewGameObject* parent);
+	bool RemoveParent();
+	NewGameObject* GetParent();
 
-	//void AddChildren(NewGameObject* childrenList);
-	//bool RemoveChildren(NewGameObject* childrenList);
-	//NewGameObject* GetChildByName();
-	//NewGameObject* GetChildByTag();
-	//NewGameObject* GetChildByIndex();
-	//vector<NewGameObject*> GetChildren();
+	bool AddChildren(NewGameObject* children);
+	bool RemoveChildren(NewGameObject* children);
+	NewGameObject* GetChildByName(char* name);
+	NewGameObject* GetChildByTag(char* tag);
+	NewGameObject* GetChildByIndex(int index);
+	vector<NewGameObject*> GetChildren();
 
 	template <class T> Component* AddComponent();
 	template <class T> bool RemoveComponent();
@@ -55,17 +55,6 @@ inline Component* NewGameObject::AddComponent()
 	}
 	componentList.push_back(new T());
 	return componentList.back();
-
-	/*for (int i = 0; i < componentList.size(); i++)
-	{
-		if (componentList[i] == Component)
-		{
-			return false;
-		}
-	}
-
-	componentList.push_back(new T());
-	return true;*/
 }
 
 // TODO: If the component gets removed after storing it outside, it is probably changing values from other objects!
@@ -85,16 +74,6 @@ inline bool NewGameObject::RemoveComponent()
 		i++;
 	}
 	return false;
-
-	/*for (int i = 0; i < componentList.size(); i++)
-	{
-		if (componentList[i] == Component)
-		{
-			componentList.erase(entities.begin() + i);
-			return true;
-		}
-	}
-	return false;*/
 }
 
 // TODO: Transform should not be removeable.

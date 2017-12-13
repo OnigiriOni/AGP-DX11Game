@@ -3,7 +3,11 @@
 class Component
 {
 private:
-	virtual void Update();
+
 public:
+	virtual void Update();
+
+	bool isEnabled = true;
+	
 	Component();
 };

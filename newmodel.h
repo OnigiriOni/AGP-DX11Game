@@ -34,6 +34,7 @@ public:
 	NewModel(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel);
 	NewModel(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel, char* filenameTexture);
 
+	void SetModel(char* filename);
 	void SetTexture(char* filename);
 	void Draw(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* light);
 

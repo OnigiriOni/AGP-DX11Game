@@ -10,12 +10,16 @@ int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf
 #include <xnamath.h>
 
 #include "renderer.h"
-#include "inputmanager.h"
-#include "newgameobject.h"
-#include "gameobject.h"
 #include "camera.h"
-#include "model.h"
-#include "light.h"
+#include "gameobject.h"
+#include "game.h"
+
+#include "newgameobject.h"
+
+
+//#include "inputmanager.h"
+//#include "model.h"
+//#include "light.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +39,7 @@ ID3D11DepthStencilView*		g_pZBuffer;
 ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 
 Renderer*					renderer;
+Game*						g_pGame;
 
 GameObject*					g_pRootNode;
 GameObject*					g_pTest4;
@@ -43,6 +48,7 @@ GameObject*					g_pTest2;
 GameObject*					g_pTest1;
 
 NewGameObject*				g_pNewGameObject;
+NewGameObject*				g_pNewNew;
 
 Camera*						g_pCamera;
 Model*						g_pModel;
@@ -83,7 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		DXTRACE_MSG("Failed to create Window");
 		return 0;
 	}
-
+	
 	if (FAILED(InitialiseInput(g_hInst, g_hWnd)))
 	{
 		DXTRACE_MSG("Failed to initialise DirectInput8");
@@ -355,9 +361,18 @@ HRESULT InitialiseGraphics()
 	renderer->GetInstance();
 
 	// Test
+	g_pGame = new Game();
 
-	g_pNewGameObject = new NewGameObject("TestObject");
-	g_pNewGameObject->AddComponent<NewModel>();
+	g_pNewGameObject = new NewGameObject(g_pGame, "TestObject01");
+	g_pNewNew = new NewGameObject(g_pGame, "TestObject02", XMVectorSet(14.0f, 20.0f, 0.48f, 0.0f));
+
+	g_pGame->AddEntity(g_pNewGameObject);
+	g_pGame->AddEntity(g_pNewNew);
+
+	g_pNewGameObject->AddChildren(g_pNewNew);
+	NewGameObject* gg = g_pNewGameObject->GetChildByName("TestObject02");
+	Transform* tf = (Transform*) gg->GetComponent<Transform>();
+	tf->position;
 
 
 	// Load the camera

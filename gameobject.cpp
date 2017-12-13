@@ -54,7 +54,6 @@ bool GameObject::RemoveChildren(GameObject* children)
 	return false;
 }
 
-// TODO: Somewhere in UpdateCollisionTree() or in CheckCollision() are wrong numbers but overall it is working.
 void GameObject::UpdateCollisionTree(XMMATRIX* world, XMVECTOR* scale)
 {
 	CalculateWorldMatrix();

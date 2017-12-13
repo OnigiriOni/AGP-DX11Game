@@ -4,9 +4,32 @@ Game::Game()
 {
 }
 
-void Game::AddEntity(NewGameObject* gameObject)
+bool Game::AddEntity(NewGameObject* gameObject)
 {
-	entities.push_back(gameObject);
+	for (NewGameObject* entity : entityList)
+	{
+		if (entity == gameObject)
+		{
+			return false;
+		}
+	}
+	entityList.push_back(gameObject);
+	return true;
+}
+
+bool Game::RemoveEntity(NewGameObject * gameObject)
+{
+	int i = 0;
+	for (NewGameObject* entity : entityList)
+	{
+		if (entity == gameObject)
+		{
+			entityList.erase(entityList.begin() + i);
+		}
+		// Removes the gameObject regardless of hierarchie
+		if (entity->RemoveChildren(gameObject)) return true; // bad performance
+		i++;
+	}
 }
 
 //bool Game::RemoveEntity(NewGameObject* gameObject)
@@ -25,11 +48,12 @@ void Game::AddEntity(NewGameObject* gameObject)
 
 void Game::Update()
 {
-	for (int i = 0; i < entities.size(); i++)
+	// Update for all enabled gameObjects
+	for (NewGameObject* gameObject : entityList)
 	{
-		if (entities[i]->isEnabled)
+		if (gameObject->isEnabled)
 		{
-			entities[i]->Update();
+			gameObject->Update();
 		}
 	}
 }

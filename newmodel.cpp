@@ -239,6 +239,10 @@ NewModel::NewModel(ID3D11Device* device, ID3D11DeviceContext* context, char* fil
 	SetTexture(filenameTexture);
 }
 
+void NewModel::SetModel(char * filename)
+{
+}
+
 void NewModel::SetTexture(char* filename)
 {
 	D3DX11CreateShaderResourceViewFromFile(m_pD3DDevice, filename, NULL, NULL, &m_pTexture0, NULL);
