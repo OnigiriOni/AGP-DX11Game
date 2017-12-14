@@ -13,11 +13,17 @@ bool Game::SetHierarchie(NewGameObject* parent, NewGameObject* child)
 {
 	if (parent == NULL)					// -> Set child to game
 	{
-		if (child->GetParent() != NULL)		// -> Is not already child of game
+		if (child->GetParent() != NULL)		// -> Is child of an object
 		{
 			child->GetParent()->RemoveChildren(child);
 			AddEntity(child);
 			child->RemoveParent();
+			return true;
+		}
+		else								// -> Initial set (protected)
+		{
+			AddEntity(child);
+			return true;
 		}
 	}
 	else								// -> Set child to parent
@@ -27,6 +33,7 @@ bool Game::SetHierarchie(NewGameObject* parent, NewGameObject* child)
 			RemoveEntity(child);
 			parent->AddChildren(child);
 			child->SetParent(parent);
+			return true;
 		}
 		else								// Parent is currently another object
 		{
@@ -35,6 +42,7 @@ bool Game::SetHierarchie(NewGameObject* parent, NewGameObject* child)
 				child->GetParent()->RemoveChildren(child);
 				parent->AddChildren(child);
 				child->SetParent(parent);
+				return true;
 			}
 		}
 	}
@@ -47,6 +55,13 @@ Game::Game()
 
 void Game::AddEntity(NewGameObject* gameObject)
 {
+	for (NewGameObject* entity : entityList)
+	{
+		if (entity == gameObject)
+		{
+			return;
+		}
+	}
 	entityList.push_back(gameObject);
 }
 
@@ -67,6 +82,8 @@ bool Game::RemoveEntity(NewGameObject * gameObject)
 
 void Game::Update()
 {
+	if (!isEnabled) return;
+
 	// Update for all enabled gameObjects
 	for (NewGameObject* gameObject : entityList)
 	{

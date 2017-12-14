@@ -8,6 +8,8 @@ private:
 
 	XMMATRIX					world = XMMatrixIdentity();
 
+	bool						isEnabled = true;
+
 	void AddEntity(NewGameObject* gameObject);
 	bool RemoveEntity(NewGameObject* gameObject);
 

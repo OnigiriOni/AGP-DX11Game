@@ -12,7 +12,7 @@ class NewGameObject
 {
 private:
 	Game*						game;
-	NewGameObject*				parent = NULL;
+	NewGameObject*				parent;
 	vector<NewGameObject*>		childrenList;
 	
 	vector<Component*>			componentList;
@@ -39,15 +39,15 @@ public:
 	NewGameObject* GetChildByIndex(int index);
 	vector<NewGameObject*> GetChildren();
 
-	template <class T> Component* AddComponent();
+	template <class T> T* AddComponent();
 	template <class T> bool RemoveComponent();
-	template <class T> Component* GetComponent();
+	template <class T> T* GetComponent();
 
 	void Update();
 };
 
 template<class T>
-inline Component* NewGameObject::AddComponent()
+inline T* NewGameObject::AddComponent()
 {
 	for (Component* component : componentList)
 	{
@@ -57,7 +57,7 @@ inline Component* NewGameObject::AddComponent()
 		}
 	}
 	componentList.push_back(new T());
-	return componentList.back();
+	return (T*) componentList.back();
 }
 
 // TODO: If the component gets removed after storing it outside, it is probably changing values from other objects!
@@ -80,13 +80,13 @@ inline bool NewGameObject::RemoveComponent()
 }
 
 template<class T>
-inline Component* NewGameObject::GetComponent()
+inline T* NewGameObject::GetComponent()
 {
 	for(Component* component : componentList)
 	{
 		if (component == dynamic_cast<T*>(component))
 		{
-			return component;
+			return (T*) component;
 		}
 	}
 	return NULL;

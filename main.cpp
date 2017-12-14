@@ -38,7 +38,7 @@ ID3D11Buffer*				g_pVertexBuffer;
 ID3D11DepthStencilView*		g_pZBuffer;
 ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 
-Renderer*					renderer;
+Renderer*					renderer = Renderer::GetInstance();
 Game*						g_pGame;
 
 GameObject*					g_pRootNode;
@@ -358,21 +358,22 @@ HRESULT InitialiseGraphics()
 {
 	HRESULT hr = S_OK;
 
-	renderer->GetInstance();
+	renderer->InitialiseGraphics(g_pD3DDevice, g_pImmediateContext);
 
 	// Test
 	g_pGame = new Game();
 
 	g_pNewGameObject = new NewGameObject(g_pGame, "TestObject01");
-	g_pNewNew = new NewGameObject(g_pGame, "TestObject02", XMVectorSet(14.0f, 20.0f, 0.48f, 0.0f));
+	g_pNewNew = new NewGameObject(g_pGame, "TestObject02", XMVectorSet(14.0f, 0.0f, 0.0f, 0.0f));
+
+	g_pNewGameObject->AddComponent<NewModel>()->SetModel("assets/cube.obj");
+	g_pNewGameObject->GetComponent<NewModel>()->SetTexture("assets/texture.bmp");
+	g_pNewNew->AddComponent<NewModel>()->SetModel("assets/sphere.obj");
+	g_pNewNew->GetComponent<NewModel>()->SetTexture("assets/texture.bmp");
 
 	g_pGame->SetHierarchie(g_pNewGameObject, g_pNewNew);
-	g_pNewGameObject->isEnabled = false;
-	g_pGame->Update();
-
-	NewGameObject* gg = g_pNewGameObject->GetChildByName("TestObject02");
-	Transform* tf = (Transform*)gg->GetComponent<Transform>();
-	tf->position *= 4;
+	//g_pNewGameObject->isEnabled = false;
+	//g_pGame->Update();
 
 
 	// Load the camera
@@ -444,7 +445,7 @@ void RenderFrame(void)
 
 
 	// RENDER HERE
-
+	g_pGame->Update();
 	g_pRootNode->Execute(&XMMatrixIdentity(), &g_pCamera->GetViewMatrix(), &g_pCamera->GetProjectionMatrix(), g_pLight);
 
 
