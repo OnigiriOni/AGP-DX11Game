@@ -8,11 +8,14 @@ private:
 
 	XMMATRIX					world = XMMatrixIdentity();
 
+	void AddEntity(NewGameObject* gameObject);
+	bool RemoveEntity(NewGameObject* gameObject);
+
 public:
 	Game();
 
-	bool AddEntity(NewGameObject* gameObject);
-	bool RemoveEntity(NewGameObject* gameObject);
+	bool SetHierarchie(NewGameObject* child);
+	bool SetHierarchie(NewGameObject* parent, NewGameObject* child);
 
 	void Update();
 };

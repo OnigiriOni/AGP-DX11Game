@@ -1,20 +1,53 @@
 #include "game.h"
 
+bool Game::SetHierarchie(NewGameObject* child)
+{
+	if (SetHierarchie(NULL, child))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Game::SetHierarchie(NewGameObject* parent, NewGameObject* child)
+{
+	if (parent == NULL)					// -> Set child to game
+	{
+		if (child->GetParent() != NULL)		// -> Is not already child of game
+		{
+			child->GetParent()->RemoveChildren(child);
+			AddEntity(child);
+			child->RemoveParent();
+		}
+	}
+	else								// -> Set child to parent
+	{
+		if (child->GetParent() == NULL)		// Parent is currently game
+		{
+			RemoveEntity(child);
+			parent->AddChildren(child);
+			child->SetParent(parent);
+		}
+		else								// Parent is currently another object
+		{
+			if (child->GetParent() != parent)	// Parent is not current parent
+			{
+				child->GetParent()->RemoveChildren(child);
+				parent->AddChildren(child);
+				child->SetParent(parent);
+			}
+		}
+	}
+	return false;
+}
+
 Game::Game()
 {
 }
 
-bool Game::AddEntity(NewGameObject* gameObject)
+void Game::AddEntity(NewGameObject* gameObject)
 {
-	for (NewGameObject* entity : entityList)
-	{
-		if (entity == gameObject)
-		{
-			return false;
-		}
-	}
 	entityList.push_back(gameObject);
-	return true;
 }
 
 bool Game::RemoveEntity(NewGameObject * gameObject)
@@ -25,26 +58,12 @@ bool Game::RemoveEntity(NewGameObject * gameObject)
 		if (entity == gameObject)
 		{
 			entityList.erase(entityList.begin() + i);
+			return true;
 		}
-		// Removes the gameObject regardless of hierarchie
-		if (entity->RemoveChildren(gameObject)) return true; // bad performance
 		i++;
 	}
+	return false;
 }
-
-//bool Game::RemoveEntity(NewGameObject* gameObject)
-//{
-//	for (int i = 0; i < entities.size(); i++)
-//	{
-//		if (gameObject == entities[i])
-//		{
-//			entities.erase(entities.begin() + i);
-//			return true;
-//		}
-//		if (entities[i]->RemoveChildren(gameObject) == true) return true;
-//	}
-//	return false;
-//}
 
 void Game::Update()
 {

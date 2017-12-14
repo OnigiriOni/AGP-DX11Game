@@ -4,7 +4,10 @@
 #include "Transform.h"
 #include "newmodel.h"
 
+#pragma once
+
 class Game;
+
 class NewGameObject
 {
 private:
@@ -25,11 +28,11 @@ public:
 	NewGameObject(Game* game, char* name);
 	NewGameObject(Game* game, char* name, XMVECTOR position);
 
-	bool AddParent(NewGameObject* parent);
-	bool RemoveParent();
+	void SetParent(NewGameObject* parent);
+	void RemoveParent();
 	NewGameObject* GetParent();
 
-	bool AddChildren(NewGameObject* children);
+	void AddChildren(NewGameObject* children);
 	bool RemoveChildren(NewGameObject* children);
 	NewGameObject* GetChildByName(char* name);
 	NewGameObject* GetChildByTag(char* tag);
@@ -58,11 +61,11 @@ inline Component* NewGameObject::AddComponent()
 }
 
 // TODO: If the component gets removed after storing it outside, it is probably changing values from other objects!
+// TODO: Transform should not be removeable.
 template<class T>
 inline bool NewGameObject::RemoveComponent()
 {
 	int i = 0;
-
 	for(Component* component : componentList)
 	{
 		if (component == dynamic_cast<T*>(component))
@@ -76,7 +79,6 @@ inline bool NewGameObject::RemoveComponent()
 	return false;
 }
 
-// TODO: Transform should not be removeable.
 template<class T>
 inline Component* NewGameObject::GetComponent()
 {

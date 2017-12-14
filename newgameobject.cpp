@@ -6,6 +6,9 @@ NewGameObject::NewGameObject(Game* game)
 	NewGameObject::game = game;
 	name = "GameObject";
 	componentList.push_back(new Transform());
+
+	// Set this as child of game
+	game->SetHierarchie(NULL, this);
 }
 
 NewGameObject::NewGameObject(Game* game, char* name)
@@ -13,6 +16,9 @@ NewGameObject::NewGameObject(Game* game, char* name)
 	NewGameObject::game = game;
 	NewGameObject::name = name;
 	componentList.push_back(new Transform());
+
+	// Set this as child of game
+	game->SetHierarchie(NULL, this);
 }
 
 NewGameObject::NewGameObject(Game* game, char* name, XMVECTOR position)
@@ -20,29 +26,19 @@ NewGameObject::NewGameObject(Game* game, char* name, XMVECTOR position)
 	NewGameObject::game = game;
 	NewGameObject::name = name;
 	componentList.push_back(new Transform(position));
+
+	// Set this as child of game
+	game->SetHierarchie(NULL, this);
 }
 
-bool NewGameObject::AddParent(NewGameObject* parent)
+void NewGameObject::SetParent(NewGameObject* parent)
 {
-	if (NewGameObject::parent != parent)
-	{
-		NewGameObject::parent = parent;
-		return true;
-	}
-	return false;
+	NewGameObject::parent = parent;
 }
 
-bool NewGameObject::RemoveParent()
+void NewGameObject::RemoveParent()
 {
-	if (parent)
-	{
-		if (game->AddEntity(this))
-		{
-			parent = NULL;
-			return true;
-		}
-	}
-	return false;
+	parent = NULL;
 }
 
 NewGameObject* NewGameObject::GetParent()
@@ -50,39 +46,9 @@ NewGameObject* NewGameObject::GetParent()
 	return parent;
 }
 
-bool NewGameObject::AddChildren(NewGameObject* children)
+void NewGameObject::AddChildren(NewGameObject* children)
 {
-	for (NewGameObject* gameObject : childrenList)
-	{
-		if (gameObject == children)
-		{
-			return false;
-		}
-	}
-
-	if (children->GetParent() == NULL)
-	{
-		if (game->RemoveEntity(children))
-		{
-			if (children->AddParent(this))
-			{
-				childrenList.push_back(children);
-				return true;
-			}
-		}
-	}
-	else
-	{
-		if (children->RemoveParent())
-		{
-			if (children->AddParent(this))
-			{
-				childrenList.push_back(children);
-				return true;
-			}
-		}
-	}
-	return false;
+	childrenList.push_back(children);
 }
 
 bool NewGameObject::RemoveChildren(NewGameObject* children)
@@ -92,17 +58,9 @@ bool NewGameObject::RemoveChildren(NewGameObject* children)
 	{
 		if (gameObject == children)
 		{
-			if (children->RemoveParent())
-			{
-				if (game->AddEntity(children))
-				{
-					childrenList.erase(childrenList.begin() + i);
-					return true;
-				}
-			}
+			childrenList.erase(childrenList.begin() + i);
+			return true;
 		}
-		// Removes the gameObject regardless of hierarchie from this gameObject
-		if (gameObject->RemoveChildren(children)) return true; // bad performance
 		i++;
 	}
 	return false;

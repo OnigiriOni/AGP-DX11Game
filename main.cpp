@@ -366,13 +366,13 @@ HRESULT InitialiseGraphics()
 	g_pNewGameObject = new NewGameObject(g_pGame, "TestObject01");
 	g_pNewNew = new NewGameObject(g_pGame, "TestObject02", XMVectorSet(14.0f, 20.0f, 0.48f, 0.0f));
 
-	g_pGame->AddEntity(g_pNewGameObject);
-	g_pGame->AddEntity(g_pNewNew);
+	g_pGame->SetHierarchie(g_pNewGameObject, g_pNewNew);
+	g_pNewGameObject->isEnabled = false;
+	g_pGame->Update();
 
-	g_pNewGameObject->AddChildren(g_pNewNew);
 	NewGameObject* gg = g_pNewGameObject->GetChildByName("TestObject02");
-	Transform* tf = (Transform*) gg->GetComponent<Transform>();
-	tf->position;
+	Transform* tf = (Transform*)gg->GetComponent<Transform>();
+	tf->position *= 4;
 
 
 	// Load the camera
