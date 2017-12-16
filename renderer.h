@@ -8,6 +8,10 @@
 #define XM_NO_ALIGNMENT
 #include <xnamath.h>
 
+class NewModel;
+class Camera;
+class Light;
+
 class Renderer
 {
 private:
@@ -30,6 +34,10 @@ private:
 	};										// TOTAL SIZE = 112 bytes
 	int model_cb_byteWidth = 112;		// The size of the combined buffer bytes. Always update after a const buffer struct change
 
+	//TODO: have to be updated
+	Camera* camera;
+	Light* light;
+
 	HRESULT LoadShaders();
 	HRESULT CreateConstantBuffer();
 	HRESULT CreateSampler();
@@ -45,6 +53,8 @@ public:
 	//void operator=(Renderer const&) = delete;
 
 	HRESULT InitialiseGraphics(ID3D11Device* device, ID3D11DeviceContext* context);
+	void AddCamera(Camera* camera);
+	void AddLight(Light* light);
 
-	void Draw();
+	void Draw(NewModel* model, XMMATRIX* world);
 };

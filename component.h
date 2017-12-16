@@ -1,13 +1,16 @@
 #pragma once
 
+class NewGameObject;
+
 class Component
 {
-private:
+protected:
+	NewGameObject* gameObject;
 
 public:
-	virtual void Update();
-
 	bool isEnabled = true;
-	
+
 	Component();
+
+	virtual void Update();
 };

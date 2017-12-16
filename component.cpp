@@ -1,9 +1,10 @@
 #include "component.h"
+#include "newgameobject.h"
 
-void Component::Update()
+Component::Component()
 {
 }
 
-Component::Component()
+void Component::Update()
 {
 }

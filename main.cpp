@@ -363,17 +363,17 @@ HRESULT InitialiseGraphics()
 	// Test
 	g_pGame = new Game();
 
-	g_pNewGameObject = new NewGameObject(g_pGame, "TestObject01");
-	g_pNewNew = new NewGameObject(g_pGame, "TestObject02", XMVectorSet(14.0f, 0.0f, 0.0f, 0.0f));
+	g_pNewGameObject = new NewGameObject(g_pGame, "TestObject01", XMVectorSet(-5.0f, 0.0f, 0.0f, 0.0f));
+	g_pNewNew = new NewGameObject(g_pGame, "TestObject02", XMVectorSet(10.0f, 0.0f, 0.0f, 0.0f));
 
 	g_pNewGameObject->AddComponent<NewModel>()->SetModel("assets/cube.obj");
 	g_pNewGameObject->GetComponent<NewModel>()->SetTexture("assets/texture.bmp");
+	g_pNewGameObject->transform->scale = XMVectorSet(3.0f, 3.0f, 3.0f, 0.0f);
 	g_pNewNew->AddComponent<NewModel>()->SetModel("assets/sphere.obj");
 	g_pNewNew->GetComponent<NewModel>()->SetTexture("assets/texture.bmp");
 
 	g_pGame->SetHierarchie(g_pNewGameObject, g_pNewNew);
 	//g_pNewGameObject->isEnabled = false;
-	//g_pGame->Update();
 
 
 	// Load the camera
@@ -383,34 +383,37 @@ HRESULT InitialiseGraphics()
 
 
 
-	g_pRootNode = new GameObject("Root");
-	g_pRootNode->position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	//g_pRootNode = new GameObject("Root");
+	//g_pRootNode->position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
-	// Load the model
-	g_pTest1 = new GameObject("Test1");
-	g_pTest1->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
-	g_pTest1->position = XMVectorSet(-20.0f, 0.0f, 0.0f, 0.0f);
+	//// Load the model
+	//g_pTest1 = new GameObject("Test1");
+	//g_pTest1->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
+	//g_pTest1->position = XMVectorSet(-20.0f, 0.0f, 0.0f, 0.0f);
 
-	g_pTest2 = new GameObject("Test2");
-	g_pTest2->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
-	g_pTest2->position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	//g_pTest2 = new GameObject("Test2");
+	//g_pTest2->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
+	//g_pTest2->position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
-	g_pTest3 = new GameObject("Test3");
-	g_pTest3->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
-	g_pTest3->position = XMVectorSet(20.0f, 0.0f, 0.0f, 0.0f);
+	//g_pTest3 = new GameObject("Test3");
+	//g_pTest3->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
+	//g_pTest3->position = XMVectorSet(20.0f, 0.0f, 0.0f, 0.0f);
 
-	g_pTest4 = new GameObject("Test4");
-	g_pTest4->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
-	g_pTest4->position = XMVectorSet(-6.0f, 0.0f, 0.0f, 0.0f);
+	//g_pTest4 = new GameObject("Test4");
+	//g_pTest4->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
+	//g_pTest4->position = XMVectorSet(-6.0f, 0.0f, 0.0f, 0.0f);
 
 
-	g_pRootNode->AddChildren(g_pCamera);
-	g_pRootNode->AddChildren(g_pTest1);
-	g_pRootNode->AddChildren(g_pTest2);
-	g_pRootNode->AddChildren(g_pTest3);
-	g_pTest2->AddChildren(g_pTest4);
+	//g_pRootNode->AddChildren(g_pCamera);
+	//g_pRootNode->AddChildren(g_pTest1);
+	//g_pRootNode->AddChildren(g_pTest2);
+	//g_pRootNode->AddChildren(g_pTest3);
+	//g_pTest2->AddChildren(g_pTest4);
 
 	g_pLight = new Light();
+
+	renderer->AddCamera(g_pCamera);
+	renderer->AddLight(g_pLight);
 
 	return S_OK;
 }
@@ -446,7 +449,7 @@ void RenderFrame(void)
 
 	// RENDER HERE
 	g_pGame->Update();
-	g_pRootNode->Execute(&XMMatrixIdentity(), &g_pCamera->GetViewMatrix(), &g_pCamera->GetProjectionMatrix(), g_pLight);
+	//g_pRootNode->Execute(&XMMatrixIdentity(), &g_pCamera->GetViewMatrix(), &g_pCamera->GetProjectionMatrix(), g_pLight);
 
 
 

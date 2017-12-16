@@ -5,7 +5,8 @@ NewGameObject::NewGameObject(Game* game)
 {
 	NewGameObject::game = game;
 	name = "GameObject";
-	componentList.push_back(new Transform());
+	componentList.push_back(new Transform(this));
+	transform = (Transform*) componentList.back();
 
 	// Set this as child of game
 	game->SetHierarchie(NULL, this);
@@ -15,7 +16,8 @@ NewGameObject::NewGameObject(Game* game, char* name)
 {
 	NewGameObject::game = game;
 	NewGameObject::name = name;
-	componentList.push_back(new Transform());
+	componentList.push_back(new Transform(this));
+	transform = (Transform*)componentList.back();
 
 	// Set this as child of game
 	game->SetHierarchie(NULL, this);
@@ -25,7 +27,8 @@ NewGameObject::NewGameObject(Game* game, char* name, XMVECTOR position)
 {
 	NewGameObject::game = game;
 	NewGameObject::name = name;
-	componentList.push_back(new Transform(position));
+	componentList.push_back(new Transform(this, position));
+	transform = (Transform*)componentList.back();
 
 	// Set this as child of game
 	game->SetHierarchie(NULL, this);
@@ -98,23 +101,22 @@ vector<NewGameObject*> NewGameObject::GetChildren()
 	return childrenList;
 }
 
-void NewGameObject::Update()
+void NewGameObject::Update(XMMATRIX* world)
 {
+	if (!isEnabled) return;
+
+	// Calculate the object world
+	transform->SetWorldMatrix(transform->GetWorldMatrix() * (*world));
+
 	// Update for all enabled components
 	for (Component* component : componentList)
 	{
-		if (component->isEnabled)
-		{
-			component->Update();
-		}
+		component->Update();
 	}
 
 	// Update for all enabled children
 	for (NewGameObject* children : childrenList)
 	{
-		if (children->isEnabled)
-		{
-			children->Update();
-		}
+		children->Update(&transform->GetWorldMatrix());
 	}
 }

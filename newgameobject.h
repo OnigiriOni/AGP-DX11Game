@@ -23,6 +23,8 @@ public:
 	char*						tag = "";
 	bool						isEnabled = true;
 
+	Transform*					transform;
+
 	// Methods
 	NewGameObject(Game* game);
 	NewGameObject(Game* game, char* name);
@@ -43,7 +45,7 @@ public:
 	template <class T> bool RemoveComponent();
 	template <class T> T* GetComponent();
 
-	void Update();
+	void Update(XMMATRIX* world);
 };
 
 template<class T>
@@ -56,7 +58,7 @@ inline T* NewGameObject::AddComponent()
 			return NULL;
 		}
 	}
-	componentList.push_back(new T());
+	componentList.push_back(new T(this));
 	return (T*) componentList.back();
 }
 

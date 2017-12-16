@@ -1,4 +1,6 @@
 #include "newmodel.h"
+#include "newgameobject.h"
+#include "renderer.h"
 
 void NewModel::CalculateModelCentre()
 {
@@ -58,8 +60,9 @@ void NewModel::CalculateBoundingSphereRadius()
 	boundingSphereRadius = sqrt(distanceSquared);
 }
 
-NewModel::NewModel()
+NewModel::NewModel(NewGameObject* parentObject)
 {
+	gameObject = parentObject;
 }
 
 HRESULT NewModel::SetModel(char * filename)
@@ -93,31 +96,25 @@ HRESULT NewModel::SetTexture(char* filename)
 	return S_OK;
 }
 
-void NewModel::Draw(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* light)
+ObjFileModel * NewModel::GetModel()
 {
-	//XMMATRIX transpose;
-	//transpose = XMMatrixTranspose(*world);
+	return object;
+}
 
-	//// Set the values for the constant buffer
-	//MODEL_CONSTANT_BUFFER model_cb_values;
-	//model_cb_values.directionalLightVector = XMVector3Transform(light->GetVector(), transpose);
-	//model_cb_values.directionalLightVector = XMVector3Normalize(model_cb_values.directionalLightVector);
-	//model_cb_values.directionalLightColour = light->GetColour();
-	//model_cb_values.ambientLightColour = light->GetAmbientColour();
-	//model_cb_values.WorldViewProjection = (*world) * (*view) * (*projection);
-
-	//// Upload the values for the constant buffer
-	//m_pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-	//m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, 0, &model_cb_values, 0, 0);
-
-	//m_pImmediateContext->PSSetSamplers(0, 1, &m_pSampler0);
-	//m_pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture0);
-
-	//m_pObject->Draw();
+ID3D11ShaderResourceView * NewModel::GetTexture()
+{
+	return texture;
 }
 
 void NewModel::Update()
 {
+	Renderer* renderer = Renderer::GetInstance();
+
+	XMMATRIX world = gameObject->transform->GetWorldMatrix();
+
+	renderer->Draw(this, &world);
+
+	renderer = nullptr;
 }
 
 XMVECTOR NewModel::GetBoundingSphereWorldSpacePosition(XMMATRIX* objectWorld)

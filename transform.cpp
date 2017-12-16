@@ -20,12 +20,14 @@ void Transform::CalculateWorldMatrix()
 	right = XMVector3Cross(forward, up);
 }
 
-Transform::Transform()
+Transform::Transform(NewGameObject* parentObject)
 {
+	gameObject = parentObject;
 }
 
-Transform::Transform(XMVECTOR position)
+Transform::Transform(NewGameObject* parentObject, XMVECTOR position)
 {
+	gameObject = parentObject;
 	Transform::position = position;
 }
 
@@ -33,9 +35,19 @@ Transform::~Transform()
 {
 }
 
-void Transform::Update()
+void Transform::SetWorldMatrix(XMMATRIX world)
+{
+	Transform::world = world;
+}
+
+XMMATRIX Transform::GetWorldMatrix()
 {
 	CalculateWorldMatrix();
+	return world;
+}
+
+void Transform::Update()
+{
 }
 
 void Transform::LookAtXZ(XMVECTOR point)

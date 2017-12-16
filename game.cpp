@@ -87,9 +87,6 @@ void Game::Update()
 	// Update for all enabled gameObjects
 	for (NewGameObject* gameObject : entityList)
 	{
-		if (gameObject->isEnabled)
-		{
-			gameObject->Update();
-		}
+		gameObject->Update(&world);
 	}
 }

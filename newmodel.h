@@ -1,8 +1,6 @@
 #pragma once
 #include "component.h"
 #include "objfilemodel.h"
-#include "light.h"
-#include "renderer.h"
 
 class NewModel : public Component
 {
@@ -17,11 +15,12 @@ private:
 	void CalculateBoundingSphereRadius();
 
 public:
-	NewModel();
+	NewModel(NewGameObject* parentObject);
 
 	HRESULT SetModel(char* filename);
 	HRESULT SetTexture(char* filename);
-	void Draw(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* light);
+	ObjFileModel* GetModel();
+	ID3D11ShaderResourceView* GetTexture();
 
 	void Update();
 
