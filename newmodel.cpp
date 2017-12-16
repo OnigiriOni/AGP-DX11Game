@@ -63,6 +63,7 @@ void NewModel::CalculateBoundingSphereRadius()
 NewModel::NewModel(NewGameObject* parentObject)
 {
 	gameObject = parentObject;
+	name = "NewModel";
 }
 
 HRESULT NewModel::SetModel(char * filename)

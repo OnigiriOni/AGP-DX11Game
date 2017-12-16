@@ -5,10 +5,11 @@ class NewGameObject;
 class Component
 {
 protected:
-	NewGameObject* gameObject;
+	NewGameObject*	gameObject;
 
 public:
-	bool isEnabled = true;
+	char*			name = "";
+	bool			isEnabled = true;
 
 	Component();
 

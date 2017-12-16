@@ -377,7 +377,7 @@ HRESULT InitialiseGraphics()
 
 
 	// Load the camera
-	g_pCamera = new Camera(XMVectorSet(0.0f, 0.0f, -50.0f, 0.0f));
+	g_pCamera = new Camera(XMVectorSet(0.0f, 20.0f, -50.0f, 0.0f));
 	g_pCamera->name = "Player";
 	g_pCamera->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/cube.obj");
 
@@ -426,12 +426,12 @@ void RenderFrame(void)
 	ReadInputStates();
 	if (IsKeyPressed(DIK_B))
 	{
-		g_pTest1->MoveRight(0.001f, g_pRootNode);
+		g_pNewGameObject->transform->position += g_pNewGameObject->transform->forward * 0.001f;
 	}
 
 	if (IsKeyPressed(DIK_N))
 	{
-		g_pTest2->MoveRight(0.001f, g_pRootNode);
+		g_pNewGameObject->transform->RotateNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), 0.005f);
 	}
 
 	// Select which primitive type to use
@@ -450,8 +450,6 @@ void RenderFrame(void)
 	// RENDER HERE
 	g_pGame->Update();
 	//g_pRootNode->Execute(&XMMatrixIdentity(), &g_pCamera->GetViewMatrix(), &g_pCamera->GetProjectionMatrix(), g_pLight);
-
-
 
 
 

@@ -17,8 +17,8 @@ private:
 
 public:
 	XMVECTOR		scale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
-	XMVECTOR		rotation = XMVectorZero();
-	XMVECTOR		position = XMVectorZero();
+	XMVECTOR		rotation = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR		position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
 	XMVECTOR		up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR		forward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);

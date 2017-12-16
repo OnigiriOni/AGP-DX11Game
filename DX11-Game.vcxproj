@@ -138,6 +138,7 @@
     <ClCompile Include="maze.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="newgameobject.cpp" />
+    <ClCompile Include="newlight.cpp" />
     <ClCompile Include="newmodel.cpp" />
     <ClCompile Include="objfilemodel.cpp" />
     <ClCompile Include="renderer.cpp" />

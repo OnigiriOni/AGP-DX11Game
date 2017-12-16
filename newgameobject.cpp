@@ -105,18 +105,23 @@ void NewGameObject::Update(XMMATRIX* world)
 {
 	if (!isEnabled) return;
 
-	// Calculate the object world
-	transform->SetWorldMatrix(transform->GetWorldMatrix() * (*world));
-
 	// Update for all enabled components
 	for (Component* component : componentList)
 	{
-		component->Update();
+		if (component->name == "Transform")
+		{
+			transform->Update();
+			transform->SetWorldMatrix(transform->GetWorldMatrix() * (*world));
+		}
+		else
+		{
+			component->Update();
+		}
 	}
 
 	// Update for all enabled children
 	for (NewGameObject* children : childrenList)
 	{
-		children->Update(&transform->GetWorldMatrix());
+		children->Update(&transform->GetWorldMatrix()); // TODO: this world is not the combined world anymore
 	}
 }
