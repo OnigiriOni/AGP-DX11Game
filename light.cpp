@@ -1,38 +1,18 @@
 #include "light.h"
+#include "renderer.h"
 
-Light::Light()
+Light::Light(NewGameObject* parentObject)
 {
-	directionalLightVector = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
+	gameObject = parentObject;
+	name = "Light";
+	
+	directionalLightVector = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	directionalLightColour = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
 	ambientLightColour = XMVectorSet(0.1f, 0.1f, 0.1f, 1.0f);
+
+	Renderer::GetInstance()->AddLight(this);
 }
 
-void Light::SetVector(float x, float y, float z)
+void Light::Update()
 {
-	directionalLightVector = XMVectorSet(x, y, z, 0.0f);
-}
-
-void Light::SetColour(float r, float g, float b)
-{
-	directionalLightColour = XMVectorSet(r, g, b, 0.0f);
-}
-
-void Light::SetAmbientColour(float r, float g, float b, float a)
-{
-	ambientLightColour = XMVectorSet(r, g, b, a);
-}
-
-XMVECTOR Light::GetVector()
-{
-	return directionalLightVector;
-}
-
-XMVECTOR Light::GetColour()
-{
-	return directionalLightColour;
-}
-
-XMVECTOR Light::GetAmbientColour()
-{
-	return ambientLightColour;
 }

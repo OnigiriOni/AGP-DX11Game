@@ -27,19 +27,10 @@
     <ClCompile Include="objfilemodel.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="light.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="inputmanager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="gameobject.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="maze.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp">
@@ -54,13 +45,13 @@
     <ClCompile Include="transform.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="newmodel.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="renderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="newlight.cpp">
+    <ClCompile Include="light.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,19 +66,10 @@
     <ClInclude Include="objfilemodel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="light.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="inputmanager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="gameobject.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="maze.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
@@ -102,10 +84,13 @@
     <ClInclude Include="transform.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="newmodel.h">
+    <ClInclude Include="renderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="renderer.h">
+    <ClInclude Include="light.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

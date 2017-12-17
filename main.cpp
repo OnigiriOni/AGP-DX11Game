@@ -17,11 +17,6 @@ int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf
 #include "newgameobject.h"
 
 
-//#include "inputmanager.h"
-//#include "model.h"
-//#include "light.h"
-
-
 //////////////////////////////////////////////////////////////////////////////////////
 //	Global Variables
 //////////////////////////////////////////////////////////////////////////////////////
@@ -38,22 +33,16 @@ ID3D11Buffer*				g_pVertexBuffer;
 ID3D11DepthStencilView*		g_pZBuffer;
 ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 
+
+
 Renderer*					renderer = Renderer::GetInstance();
 Game*						g_pGame;
 
-GameObject*					g_pRootNode;
-GameObject*					g_pTest4;
-GameObject*					g_pTest3;
-GameObject*					g_pTest2;
-GameObject*					g_pTest1;
-
 NewGameObject*				g_pNewGameObject;
 NewGameObject*				g_pNewNew;
+NewGameObject*				g_pLight;
 
 Camera*						g_pCamera;
-Model*						g_pModel;
-Model*						g_pModelSphere;
-Light*						g_pLight;
 
 
 // Rename for each tutorial
@@ -326,13 +315,13 @@ HRESULT InitialiseD3D()
 //////////////////////////////////////////////////////////////////////////////////////
 void ShutdownD3D()
 {
-	delete g_pModel;
+	//delete g_pModel;
 	delete g_pCamera;
-	delete g_pRootNode;
-	delete g_pTest3;
-	delete g_pTest2;
-	delete g_pTest1;
-	delete g_pModelSphere;
+	//delete g_pRootNode;
+	//delete g_pTest3;
+	//delete g_pTest2;
+	//delete g_pTest1;
+	//delete g_pModelSphere;
 	delete g_pLight;
 
 	if (g_pKeyboardDevice)
@@ -358,19 +347,24 @@ HRESULT InitialiseGraphics()
 {
 	HRESULT hr = S_OK;
 
+	// Load the renderer
 	renderer->InitialiseGraphics(g_pD3DDevice, g_pImmediateContext);
 
-	// Test
+
+	// Create game hierarchie
 	g_pGame = new Game();
 
+
+	// Load the objects
 	g_pNewGameObject = new NewGameObject(g_pGame, "TestObject01", XMVectorSet(-5.0f, 0.0f, 0.0f, 0.0f));
 	g_pNewNew = new NewGameObject(g_pGame, "TestObject02", XMVectorSet(10.0f, 0.0f, 0.0f, 0.0f));
 
-	g_pNewGameObject->AddComponent<NewModel>()->SetModel("assets/cube.obj");
-	g_pNewGameObject->GetComponent<NewModel>()->SetTexture("assets/texture.bmp");
+	g_pNewGameObject->AddComponent<Model>()->SetModel("assets/cube.obj");
+	g_pNewGameObject->GetComponent<Model>()->SetTexture("assets/texture.bmp");
 	g_pNewGameObject->transform->scale = XMVectorSet(3.0f, 3.0f, 3.0f, 0.0f);
-	g_pNewNew->AddComponent<NewModel>()->SetModel("assets/sphere.obj");
-	g_pNewNew->GetComponent<NewModel>()->SetTexture("assets/texture.bmp");
+
+	g_pNewNew->AddComponent<Model>()->SetModel("assets/sphere.obj");
+	g_pNewNew->GetComponent<Model>()->SetTexture("assets/texture.bmp");
 
 	g_pGame->SetHierarchie(g_pNewGameObject, g_pNewNew);
 	//g_pNewGameObject->isEnabled = false;
@@ -382,38 +376,13 @@ HRESULT InitialiseGraphics()
 	g_pCamera->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/cube.obj");
 
 
-
-	//g_pRootNode = new GameObject("Root");
-	//g_pRootNode->position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-
-	//// Load the model
-	//g_pTest1 = new GameObject("Test1");
-	//g_pTest1->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
-	//g_pTest1->position = XMVectorSet(-20.0f, 0.0f, 0.0f, 0.0f);
-
-	//g_pTest2 = new GameObject("Test2");
-	//g_pTest2->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
-	//g_pTest2->position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-
-	//g_pTest3 = new GameObject("Test3");
-	//g_pTest3->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
-	//g_pTest3->position = XMVectorSet(20.0f, 0.0f, 0.0f, 0.0f);
-
-	//g_pTest4 = new GameObject("Test4");
-	//g_pTest4->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/sphere.obj", "assets/texture.bmp");
-	//g_pTest4->position = XMVectorSet(-6.0f, 0.0f, 0.0f, 0.0f);
+	// Load the light
+	g_pLight = new NewGameObject(g_pGame, "Light01");
+	g_pLight->AddComponent<Light>();
 
 
-	//g_pRootNode->AddChildren(g_pCamera);
-	//g_pRootNode->AddChildren(g_pTest1);
-	//g_pRootNode->AddChildren(g_pTest2);
-	//g_pRootNode->AddChildren(g_pTest3);
-	//g_pTest2->AddChildren(g_pTest4);
-
-	g_pLight = new Light();
-
+	// ihhhh
 	renderer->AddCamera(g_pCamera);
-	renderer->AddLight(g_pLight);
 
 	return S_OK;
 }
@@ -423,6 +392,7 @@ HRESULT InitialiseGraphics()
 //////////////////////////////////////////////////////////////////////////////////////
 void RenderFrame(void)
 {
+	// Test
 	ReadInputStates();
 	if (IsKeyPressed(DIK_B))
 	{
@@ -437,19 +407,19 @@ void RenderFrame(void)
 	// Select which primitive type to use
 	g_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
-
 	// Clear the back buffer
 	g_pImmediateContext->ClearRenderTargetView(g_pBackBufferRTView, g_clear_colour);
 	g_pImmediateContext->ClearDepthStencilView(g_pZBuffer, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 
 
-	//g_pModelSphere->CheckCollision(g_pModel);
 
 
 	// RENDER HERE
 	g_pGame->Update();
-	//g_pRootNode->Execute(&XMMatrixIdentity(), &g_pCamera->GetViewMatrix(), &g_pCamera->GetProjectionMatrix(), g_pLight);
+	g_pNewNew->transform->scale = XMVectorSet(0.5f, 0.5f, 0.5f, 0.0f);
+
+
 
 
 

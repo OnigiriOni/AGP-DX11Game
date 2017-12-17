@@ -1,11 +1,4 @@
 #pragma once
-//#include <d3d11.h>
-//#include <math.h>
-//
-//#define _XM_NO_INTRINSICS_
-//#define XM_NO_ALIGNMENT
-//#include <xnamath.h>
-
 #include "inputmanager.h"
 #include "gameobject.h"
 

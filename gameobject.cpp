@@ -22,12 +22,12 @@ GameObject::GameObject(char* name)
 
 void GameObject::SetModel(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel)
 {
-	g_pModel = new Model(device, context, filenameModel);
+	//g_pModel = new Model(device, context, filenameModel);
 }
 
 void GameObject::SetModel(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel, char* filenameTexture)
 {
-	g_pModel = new Model(device, context, filenameModel, filenameTexture);
+	//g_pModel = new Model(device, context, filenameModel, filenameTexture);
 }
 
 Model* GameObject::GetModel()
@@ -119,18 +119,18 @@ bool GameObject::CheckCollision(GameObject* otherGameObject, GameObject* thisObj
 
 void GameObject::Execute(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* light)
 {
-	CalculateWorldMatrix();
+	//CalculateWorldMatrix();
 
-	g_World *= *world;
+	//g_World *= *world;
 
-	if (g_pModel) g_pModel->Draw(&g_World, view, projection, light);
+	//if (g_pModel) g_pModel->Draw(&g_World, view, projection, light);
 
-	// TODO: Scale gets transported through all child objects, fix this
-	for (int i = 0; i< g_Children.size(); i++)
-	{
-		g_Children[i]->Execute(&g_World, view, projection, light);
-		g_Children[i]->Update();
-	}
+	//// TODO: Scale gets transported through all child objects, fix this
+	//for (int i = 0; i< g_Children.size(); i++)
+	//{
+	//	g_Children[i]->Execute(&g_World, view, projection, light);
+	//	g_Children[i]->Update();
+	//}
 }
 
 void GameObject::Update()

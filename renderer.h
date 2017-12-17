@@ -3,14 +3,15 @@
 #include <d3dx11.h>
 #include <dxerr.h>
 #include <stdio.h>
+#include <math.h>
 
 #define _XM_NO_INTRINSICS_
 #define XM_NO_ALIGNMENT
 #include <xnamath.h>
 
-class NewModel;
-class Camera;
-class Light;
+#include "model.h"
+#include "camera.h"
+#include "light.h"
 
 class Renderer
 {
@@ -34,7 +35,7 @@ private:
 	};										// TOTAL SIZE = 112 bytes
 	int model_cb_byteWidth = 112;		// The size of the combined buffer bytes. Always update after a const buffer struct change
 
-	//TODO: have to be updated
+	//TODO: lists of cameras and lights
 	Camera* camera;
 	Light* light;
 
@@ -56,5 +57,5 @@ public:
 	void AddCamera(Camera* camera);
 	void AddLight(Light* light);
 
-	void Draw(NewModel* model, XMMATRIX* world);
+	void Draw(Model* model, XMMATRIX* world);
 };

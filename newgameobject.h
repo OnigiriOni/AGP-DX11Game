@@ -1,10 +1,8 @@
 #pragma once
-//#include "game.h"
 #include "component.h"
 #include "Transform.h"
-#include "newmodel.h"
-
-#pragma once
+#include "model.h"
+#include "light.h"
 
 class Game;
 

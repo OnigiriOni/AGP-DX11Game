@@ -122,6 +122,6 @@ void NewGameObject::Update(XMMATRIX* world)
 	// Update for all enabled children
 	for (NewGameObject* children : childrenList)
 	{
-		children->Update(&transform->GetWorldMatrix()); // TODO: this world is not the combined world anymore
+		children->Update(&transform->GetWorldMatrix());
 	}
 }

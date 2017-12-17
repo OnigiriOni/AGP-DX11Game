@@ -1,42 +1,31 @@
 #pragma once
+#include "component.h"
 #include "objfilemodel.h"
-#include "light.h"
 
-class Model
+class ObjFileModel;
+
+class Model : public Component
 {
 private:
-	ID3D11Device*				m_pD3DDevice;
-	ID3D11DeviceContext*		m_pImmediateContext;
-
-	ID3D11ShaderResourceView*	g_pTexture0;
-	ID3D11SamplerState*			g_pSampler0;
-
-	ObjFileModel*				m_pObject;
-	ID3D11VertexShader*			m_pVShader;
-	ID3D11PixelShader*			m_pPShader;
-	ID3D11InputLayout*			m_pInputLayout;
-	ID3D11Buffer*				m_pConstantBuffer;
+	ObjFileModel*				object;
+	ID3D11ShaderResourceView*	texture;
 
 	XMVECTOR					boundingSpereCentre;
 	float						boundingSphereRadius;
-
-	// Methods
-	HRESULT LoadObjModel(char* filename);
-	HRESULT LoadShaders();
-	HRESULT CreateConstantBuffer();
-	HRESULT CreateSampler();
 
 	void CalculateModelCentre();
 	void CalculateBoundingSphereRadius();
 
 public:
-	Model(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel);
-	Model(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel, char* filenameTexture);
+	Model(NewGameObject* parentObject);
 
-	void SetTexture(char* filename);
-	void Draw(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* light);
+	HRESULT SetModel(char* filename);
+	HRESULT SetTexture(char* filename);
+	ObjFileModel* GetModel();
+	ID3D11ShaderResourceView* GetTexture();
 
-	XMVECTOR GetBoundingSphereWorldSpacePosition(XMMATRIX* world);
-	float GetBoundingSphereRadius(XMVECTOR scale);
-	//bool CheckCollision(Model* model);
+	void Update();
+
+	XMVECTOR GetBoundingSphereWorldSpacePosition(XMMATRIX* objectWorld);
+	float GetBoundingSphereRadius(XMVECTOR objectScale);
 };

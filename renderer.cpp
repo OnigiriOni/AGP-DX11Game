@@ -1,7 +1,4 @@
 #include "renderer.h"
-#include "newmodel.h"
-#include "camera.h"
-#include "light.h"
 
 Renderer* Renderer::instance = nullptr;
 
@@ -166,7 +163,7 @@ HRESULT Renderer::CreateSampler()
 	return S_OK;
 }
 
-void Renderer::Draw(NewModel* model, XMMATRIX* world)
+void Renderer::Draw(Model* model, XMMATRIX* world)
 {
 	ID3D11ShaderResourceView* texture = model->GetTexture();
 
@@ -178,10 +175,10 @@ void Renderer::Draw(NewModel* model, XMMATRIX* world)
 
 	// Set the values for the constant buffer
 	MODEL_CONSTANT_BUFFER model_cb_values;
-	model_cb_values.directionalLightVector = XMVector3Transform(light->GetVector(), transpose);
+	model_cb_values.directionalLightVector = XMVector3Transform( light->directionalLightVector, transpose);
 	model_cb_values.directionalLightVector = XMVector3Normalize(model_cb_values.directionalLightVector);
-	model_cb_values.directionalLightColour = light->GetColour();
-	model_cb_values.ambientLightColour = light->GetAmbientColour();
+	model_cb_values.directionalLightColour = light->directionalLightColour;
+	model_cb_values.ambientLightColour = light->ambientLightColour;
 	model_cb_values.WorldViewProjection = (*world) * (view) * (projection);
 
 	// Upload the values for the constant buffer
