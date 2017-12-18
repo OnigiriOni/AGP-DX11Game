@@ -109,6 +109,8 @@ ID3D11ShaderResourceView * Model::GetTexture()
 
 void Model::Update()
 {
+	if (!isEnabled) return;
+
 	Renderer* renderer = Renderer::GetInstance();
 
 	XMMATRIX world = gameObject->transform->GetWorldMatrix();
@@ -118,21 +120,31 @@ void Model::Update()
 	renderer = nullptr;
 }
 
-XMVECTOR Model::GetBoundingSphereWorldSpacePosition(XMMATRIX* objectWorld)
+XMVECTOR Model::GetBoundingSphereCentre()
 {
-	return XMVector3Transform(boundingSpereCentre, *objectWorld);
+	return boundingSpereCentre;
 }
 
-float Model::GetBoundingSphereRadius(XMVECTOR objectScale)
+float Model::GetBoundingSphereRadius()
 {
-	float scaleMax = objectScale.x;
-	if (objectScale.y > scaleMax)
-	{
-		scaleMax = objectScale.y;
-	}
-	if (objectScale.z > scaleMax)
-	{
-		scaleMax = objectScale.z;
-	}
-	return boundingSphereRadius * scaleMax;
+	return boundingSphereRadius;
 }
+
+//XMVECTOR Model::GetBoundingSphereWorldSpacePosition(XMMATRIX* objectWorld)
+//{
+//	return XMVector3Transform(boundingSpereCentre, *objectWorld);
+//}
+//
+//float Model::GetBoundingSphereRadius(XMVECTOR objectScale)
+//{
+//	float scaleMax = objectScale.x;
+//	if (objectScale.y > scaleMax)
+//	{
+//		scaleMax = objectScale.y;
+//	}
+//	if (objectScale.z > scaleMax)
+//	{
+//		scaleMax = objectScale.z;
+//	}
+//	return boundingSphereRadius * scaleMax;
+//}

@@ -63,7 +63,7 @@ void GameObject::UpdateCollisionTree(XMMATRIX* world, XMVECTOR* scale)
 
 	if (g_pModel)
 	{
-		g_WorldPosition = g_pModel->GetBoundingSphereWorldSpacePosition(&g_World);
+		//g_WorldPosition = g_pModel->GetBoundingSphereWorldSpacePosition(&g_World);
 	}
 
 	for (int i = 0; i< g_Children.size(); i++)
@@ -89,8 +89,8 @@ bool GameObject::CheckCollision(GameObject* otherGameObject, GameObject* thisObj
 	{
 		XMVECTOR otherWorldPosition = otherGameObject->g_WorldPosition;
 
-		float thisBSRadius = g_pModel->GetBoundingSphereRadius(scale);
-		float otherBSRadius = otherGameObject->g_pModel->GetBoundingSphereRadius(otherGameObject->scale);
+		float thisBSRadius = 0;// = g_pModel->GetBoundingSphereRadius(scale);
+		float otherBSRadius = 0;// = otherGameObject->g_pModel->GetBoundingSphereRadius(otherGameObject->scale);
 
 		float distanceSquared = pow((otherWorldPosition.x - g_WorldPosition.x), 2) + pow((otherWorldPosition.y - g_WorldPosition.y), 2) + pow((otherWorldPosition.z - g_WorldPosition.z), 2);
 		

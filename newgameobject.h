@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "model.h"
 #include "light.h"
+#include "spherecollider.h"
 
 class Game;
 

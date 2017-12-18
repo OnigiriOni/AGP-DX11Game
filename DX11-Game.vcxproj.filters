@@ -54,6 +54,9 @@
     <ClCompile Include="model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="spherecollider.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders.hlsl" />
@@ -91,6 +94,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="model.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="spherecollider.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

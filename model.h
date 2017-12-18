@@ -26,6 +26,8 @@ public:
 
 	void Update();
 
-	XMVECTOR GetBoundingSphereWorldSpacePosition(XMMATRIX* objectWorld);
-	float GetBoundingSphereRadius(XMVECTOR objectScale);
+	XMVECTOR GetBoundingSphereCentre();
+	float GetBoundingSphereRadius();
+	//XMVECTOR GetBoundingSphereWorldSpacePosition(XMMATRIX* objectWorld);
+	//float GetBoundingSphereRadius(XMVECTOR objectScale);
 };

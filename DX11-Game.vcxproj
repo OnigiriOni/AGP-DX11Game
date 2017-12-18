@@ -139,6 +139,7 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="objfilemodel.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="spherecollider.cpp" />
     <ClCompile Include="transform.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +174,7 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="objfilemodel.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="spherecollider.h" />
     <ClInclude Include="transform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
