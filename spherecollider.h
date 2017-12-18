@@ -13,8 +13,7 @@ public:
 
 	SphereCollider(NewGameObject*  parentObject);
 
-	bool CheckCollision(SphereCollider* otherCollider);
-	bool CheckCollision(SphereCollider* otherCollider, SphereCollider* thisCollider);
+	bool CheckCollision(NewGameObject* otherObject);
 
 	void Update();
 

@@ -29,6 +29,8 @@ public:
 	NewGameObject(Game* game, char* name);
 	NewGameObject(Game* game, char* name, XMVECTOR position);
 
+	Game* GetGame();
+
 	void SetParent(NewGameObject* parent);
 	void RemoveParent();
 	NewGameObject* GetParent();

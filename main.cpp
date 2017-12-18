@@ -358,22 +358,24 @@ HRESULT InitialiseGraphics()
 
 	// Load the objects
 	g_pNewGameObject = new NewGameObject(g_pGame, "TestObject01", XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-	//g_pNewNew = new NewGameObject(g_pGame, "TestObject02", XMVectorSet(10.0f, 0.0f, 0.0f, 0.0f));
+	g_pNewNew = new NewGameObject(g_pGame, "TestObject02", XMVectorSet(10.0f, 0.0f, 0.0f, 0.0f));
 	g_pCollision = new NewGameObject(g_pGame, "Collision01", XMVectorSet(20.0f, 0.0f, 0.0f, 0.0f));
 
 	g_pNewGameObject->AddComponent<Model>()->SetModel("assets/sphere.obj");
 	g_pNewGameObject->GetComponent<Model>()->SetTexture("assets/texture.bmp");
 	g_pNewGameObject->AddComponent<SphereCollider>();
 
-	//g_pNewNew->AddComponent<Model>()->SetModel("assets/sphere.obj");
-	//g_pNewNew->GetComponent<Model>()->SetTexture("assets/texture.bmp");
+	g_pNewNew->AddComponent<Model>()->SetModel("assets/sphere.obj");
+	g_pNewNew->GetComponent<Model>()->SetTexture("assets/texture.bmp");
+	g_pNewNew->AddComponent<SphereCollider>();
 
 	g_pCollision->AddComponent<Model>()->SetModel("assets/sphere.obj");
 	g_pCollision->GetComponent<Model>()->SetTexture("assets/texture.bmp");
 	g_pCollision->transform->rotation = XMVectorSet(0.0f, 90.0f, 0.0f, 0.0f);
 	g_pCollision->AddComponent<SphereCollider>();
 
-	//g_pGame->SetHierarchie(g_pNewGameObject, g_pNewNew);
+
+	g_pGame->SetHierarchie(g_pCollision, g_pNewNew);
 
 
 	// Load the camera
@@ -405,10 +407,10 @@ void RenderFrame(void)
 		XMVECTOR pos = g_pNewGameObject->transform->position;
 		g_pNewGameObject->transform->position += g_pNewGameObject->transform->right * 0.001f;
 		
-		if (g_pNewGameObject->GetComponent<SphereCollider>()->CheckCollision(g_pCollision->GetComponent<SphereCollider>()))
-		{
-			g_pNewGameObject->transform->position = pos;
-		}
+		//if (g_pNewGameObject->GetComponent<SphereCollider>()->CheckCollision(g_pCollision->GetComponent<SphereCollider>()))
+		//{
+		//	g_pNewGameObject->transform->position = pos;
+		//}
 	}
 
 	if (IsKeyPressed(DIK_N))

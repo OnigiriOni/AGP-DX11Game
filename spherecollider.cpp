@@ -1,4 +1,5 @@
 #include "spherecollider.h"
+#include "game.h"
 #include "newgameobject.h"
 
 void SphereCollider::SetSphere()
@@ -26,45 +27,64 @@ SphereCollider::SphereCollider(NewGameObject* parentObject)
 	SetSphere();
 }
 
-bool SphereCollider::CheckCollision(SphereCollider* otherCollider)
+bool SphereCollider::CheckCollision(NewGameObject* otherObject)
 {
-	return CheckCollision(otherCollider, this);
-}
+	if (otherObject == gameObject) return false;
 
-bool SphereCollider::CheckCollision(SphereCollider* otherCollider, SphereCollider* thisCollider)
-{
-	if (otherCollider == thisCollider) return false;
+	SphereCollider* otherCollider = otherObject->GetComponent<SphereCollider>();
 
-	if (otherCollider->isEnabled && thisCollider->isEnabled)
+	if (otherCollider)
 	{
-		XMVECTOR otherWorldPosition = otherCollider->GetWorldPosition();
-		XMVECTOR thisWorldPosition = thisCollider->GetWorldPosition();
-
-		float distanceSquared = pow((otherWorldPosition.x - thisWorldPosition.x), 2) + pow((otherWorldPosition.y - thisWorldPosition.y), 2) + pow((otherWorldPosition.z - thisWorldPosition.z), 2);
-		
-		if (distanceSquared < pow(otherCollider->GetRadius() + thisCollider->GetRadius(), 2))
+		if (otherCollider->isEnabled)
 		{
-			return true;
+			XMVECTOR otherWorldPosition = otherCollider->GetWorldPosition();
+			XMVECTOR thisWorldPosition = GetWorldPosition();
+
+			float distanceSquared = pow((otherWorldPosition.x - thisWorldPosition.x), 2) + pow((otherWorldPosition.y - thisWorldPosition.y), 2) + pow((otherWorldPosition.z - thisWorldPosition.z), 2);
+
+			if (distanceSquared < pow(otherCollider->GetRadius() + GetRadius(), 2))
+			{
+				return true;
+			}
 		}
 	}
-	
-	// Iterate through compared tree child nodes
-	for (int i = 0; i< otherCollider->gameObject->GetChildren().size(); i++)
+
+	// Iterate through otherObject children
+	for (NewGameObject* otherChildren : otherObject->GetChildren())
 	{
-		// Check for collsion against all compared tree child nodes
-		if (CheckCollision(otherCollider->gameObject->GetChildren()[i]->GetComponent<SphereCollider>(), thisCollider)) return true;
+		if (CheckCollision(otherChildren)) return true;
 	}
 
-	// Iterate through composite object child nodes
-	for (int i = 0; i< thisCollider->gameObject->GetChildren().size(); i++)
+	// Iterate through this component parent's children
+	for (NewGameObject* thisChildren : gameObject->GetChildren())
 	{
-		// Check all the child nodes of the composite object against compared tree
-		if (thisCollider->gameObject->GetChildren()[i]->GetComponent<SphereCollider>()->CheckCollision(otherCollider, thisCollider)) return true;
+		thisChildren->name = thisChildren->name;
+
+		SphereCollider* childCollider = thisChildren->GetComponent<SphereCollider>();
+
+		if (childCollider)
+		{
+			if (childCollider->CheckCollision(otherObject)) return true;
+		}
 	}
+
+	return false;
 }
 
 void SphereCollider::Update()
 {
+	if (!isEnabled) return;
+	if (gameObject->GetGame()->GetUpdates() < 1) return;
+
+	vector<NewGameObject*> otherEntities = gameObject->GetGame()->GetEntities();
+
+	for (NewGameObject* entity : otherEntities)
+	{
+		if (CheckCollision(entity))
+		{
+			// TODO: Raise event for OnCollision(). With the object, or a struct with position, objects, etc.
+		}
+	}
 }
 
 XMVECTOR SphereCollider::GetWorldPosition()

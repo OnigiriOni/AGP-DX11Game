@@ -49,8 +49,19 @@ bool Game::SetHierarchie(NewGameObject* parent, NewGameObject* child)
 	return false;
 }
 
+int Game::GetUpdates()
+{
+	return updates;
+}
+
 Game::Game()
 {
+	updates = 0;
+}
+
+vector<NewGameObject*> Game::GetEntities()
+{
+	return entityList;
 }
 
 void Game::AddEntity(NewGameObject* gameObject)
@@ -89,4 +100,5 @@ void Game::Update()
 	{
 		gameObject->Update(&world);
 	}
+	updates = 1;
 }

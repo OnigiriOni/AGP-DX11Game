@@ -34,6 +34,11 @@ NewGameObject::NewGameObject(Game* game, char* name, XMVECTOR position)
 	game->SetHierarchie(NULL, this);
 }
 
+Game * NewGameObject::GetGame()
+{
+	return game;
+}
+
 void NewGameObject::SetParent(NewGameObject* parent)
 {
 	NewGameObject::parent = parent;
