@@ -1,13 +1,9 @@
 #pragma once
-#include "inputmanager.h"
-#include "gameobject.h"
+#include "component.h"
 
-class Camera : public GameObject
+class Camera : public Component
 {
 private:
-	// Variables
-	XMVECTOR				forward;
-	XMVECTOR				up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMMATRIX				view;
 	XMMATRIX				projection;
 
@@ -15,23 +11,17 @@ private:
 	float					aspectRatio = 640.0f / 480.0f;
 	float					nearPlane = 1.0f;
 	float					farPlane = 200.0f;
-	
-	// Methods
+
 	void CalculateProjectionMatrix();
 	void CalculateViewMatrix();
 
 public:
-	// Methods
-	Camera();
-	Camera(XMVECTOR position);
-	Camera(XMVECTOR position, XMVECTOR forward);
+	Camera(GameObject* parentObject);
 
 	XMMATRIX GetProjectionMatrix();
 	XMMATRIX GetViewMatrix();
 
 	void Update();
-
-	void PlayerInput();
 
 	void SetFieldOfView(float newFieldOfView);
 	void SetAspectRatio(float screenWidth, float screenHeight);

@@ -6,17 +6,17 @@ class SphereCollider : public Component
 private:
 	void SetSphere();
 
-	__event void CollisionEvent(NewGameObject* otherObject); // TODO: Event handler ???
+	__event void CollisionEvent(GameObject* otherObject); // TODO: Event handler ???
 
 public:
 	XMVECTOR		localePosition;
 	float			radiusScale;
 	float			radius;
 
-	SphereCollider(NewGameObject*  parentObject);
+	SphereCollider(GameObject*  parentObject);
 
-	bool CheckCollision(NewGameObject* otherObject);
-	void OnCollision(NewGameObject* otherObject);
+	bool CheckCollision(GameObject* otherObject);
+	void OnCollision(GameObject* otherObject);
 
 	void Update();
 

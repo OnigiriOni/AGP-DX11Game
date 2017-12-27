@@ -17,7 +17,7 @@ private:
 	void CalculateBoundingSphereRadius();
 
 public:
-	Model(NewGameObject* parentObject);
+	Model(GameObject* parentObject);
 
 	HRESULT SetModel(char* filename);
 	HRESULT SetTexture(char* filename);

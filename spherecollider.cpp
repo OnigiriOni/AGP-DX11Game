@@ -1,6 +1,6 @@
 #include "spherecollider.h"
 #include "game.h"
-#include "newgameobject.h"
+#include "gameobject.h"
 
 void SphereCollider::SetSphere()
 {
@@ -19,7 +19,7 @@ void SphereCollider::SetSphere()
 	}
 }
 
-SphereCollider::SphereCollider(NewGameObject* parentObject)
+SphereCollider::SphereCollider(GameObject* parentObject)
 {
 	gameObject = parentObject;
 	name = "SphereCollider";
@@ -29,7 +29,7 @@ SphereCollider::SphereCollider(NewGameObject* parentObject)
 	__hook(&SphereCollider::CollisionEvent, this, &SphereCollider::OnCollision);
 }
 
-bool SphereCollider::CheckCollision(NewGameObject* otherObject)
+bool SphereCollider::CheckCollision(GameObject* otherObject)
 {
 	if (otherObject == gameObject) return false;
 
@@ -52,13 +52,13 @@ bool SphereCollider::CheckCollision(NewGameObject* otherObject)
 	}
 
 	// Iterate through otherObject children
-	for (NewGameObject* otherChildren : otherObject->GetChildren())
+	for (GameObject* otherChildren : otherObject->GetChildren())
 	{
 		if (CheckCollision(otherChildren)) return true;
 	}
 
 	// Iterate through this component parent's children
-	for (NewGameObject* thisChildren : gameObject->GetChildren())
+	for (GameObject* thisChildren : gameObject->GetChildren())
 	{
 		thisChildren->name = thisChildren->name;
 
@@ -73,7 +73,7 @@ bool SphereCollider::CheckCollision(NewGameObject* otherObject)
 	return false;
 }
 
-void SphereCollider::OnCollision(NewGameObject * otherObject)
+void SphereCollider::OnCollision(GameObject * otherObject)
 {
 	otherObject->name = otherObject->name;
 	name = name;
@@ -84,9 +84,9 @@ void SphereCollider::Update()
 	if (!isEnabled) return;
 	if (gameObject->GetGame()->GetUpdates() < 1) return;
 
-	vector<NewGameObject*> otherEntities = gameObject->GetGame()->GetEntities();
+	vector<GameObject*> otherEntities = gameObject->GetGame()->GetEntities();
 
-	for (NewGameObject* entity : otherEntities)
+	for (GameObject* entity : otherEntities)
 	{
 		if (CheckCollision(entity))
 		{

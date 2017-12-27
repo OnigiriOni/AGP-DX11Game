@@ -9,12 +9,10 @@ int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf
 #define XM_NO_ALIGNMENT
 #include <xnamath.h>
 
+#include "inputmanager.h"
 #include "renderer.h"
-#include "camera.h"
 #include "gameobject.h"
 #include "game.h"
-
-#include "newgameobject.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -38,11 +36,11 @@ ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 Renderer*					renderer = Renderer::GetInstance();
 Game*						g_pGame;
 
-NewGameObject*				g_pNewGameObject;
-NewGameObject*				g_pNewNew;
-NewGameObject*				g_pCollision;
-NewGameObject*				g_pLight;
-NewGameObject*				g_pCamera;
+GameObject*				g_pNewGameObject;
+GameObject*				g_pNewNew;
+GameObject*				g_pCollision;
+GameObject*				g_pLight;
+GameObject*				g_pCamera;
 
 
 // Rename for each tutorial
@@ -356,9 +354,9 @@ HRESULT InitialiseGraphics()
 
 
 	// Load the objects
-	g_pNewGameObject = new NewGameObject(g_pGame, "TestObject01", XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-	g_pNewNew = new NewGameObject(g_pGame, "TestObject02", XMVectorSet(10.0f, 0.0f, 0.0f, 0.0f));
-	g_pCollision = new NewGameObject(g_pGame, "Collision01", XMVectorSet(20.0f, 0.0f, 0.0f, 0.0f));
+	g_pNewGameObject = new GameObject(g_pGame, "TestObject01", XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	g_pNewNew = new GameObject(g_pGame, "TestObject02", XMVectorSet(10.0f, 0.0f, 0.0f, 0.0f));
+	g_pCollision = new GameObject(g_pGame, "Collision01", XMVectorSet(20.0f, 0.0f, 0.0f, 0.0f));
 
 	g_pNewGameObject->AddComponent<Model>()->SetModel("assets/sphere.obj");
 	g_pNewGameObject->GetComponent<Model>()->SetTexture("assets/texture.bmp");
@@ -378,13 +376,13 @@ HRESULT InitialiseGraphics()
 
 
 	// Load the camera
-	g_pCamera = new NewGameObject(g_pGame, "MainCamera", XMVectorSet(0.0f, 20.0f, -50.0f, 0.0f));
+	g_pCamera = new GameObject(g_pGame, "MainCamera", XMVectorSet(0.0f, 20.0f, -50.0f, 0.0f));
 	g_pCamera->AddComponent<SphereCollider>();
-	g_pCamera->AddComponent<NewCamera>();
+	g_pCamera->AddComponent<Camera>();
 
 
 	// Load the light
-	g_pLight = new NewGameObject(g_pGame, "Light01");
+	g_pLight = new GameObject(g_pGame, "Light01");
 	g_pLight->AddComponent<Light>();
 
 	return S_OK;

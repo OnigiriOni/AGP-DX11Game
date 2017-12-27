@@ -1,7 +1,7 @@
 #include "light.h"
 #include "renderer.h"
 
-Light::Light(NewGameObject* parentObject)
+Light::Light(GameObject* parentObject)
 {
 	gameObject = parentObject;
 	name = "Light";

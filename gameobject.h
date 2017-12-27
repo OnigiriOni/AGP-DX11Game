@@ -1,59 +1,96 @@
 #pragma once
-#include <d3d11.h>
-#include <math.h>
-
-#define _XM_NO_INTRINSICS_
-#define XM_NO_ALIGNMENT
-#include <xnamath.h>
-
+#include "component.h"
+#include "Transform.h"
 #include "model.h"
 #include "light.h"
+#include "spherecollider.h"
+
+class Game;
 
 class GameObject
 {
-protected:
-	// Variables
-	Model*					g_pModel = NULL;
-	vector<GameObject*>		g_Children;
-	XMMATRIX				g_World;
-
-	XMVECTOR				g_WorldScale;
-	XMVECTOR				g_WorldPosition;
-
-	// Methods
-	void CalculateWorldMatrix();
+private:
+	Game*						game;
+	GameObject*				parent;
+	vector<GameObject*>		childrenList;
+	
+	vector<Component*>			componentList;
 
 public:
 	// Variables
-	char*					name;
-	XMVECTOR				scale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
-	XMVECTOR				rotation = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR				position = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	char*						name = "";
+	char*						tag = "";
+	bool						isEnabled = true;
+
+	Transform*					transform;
 
 	// Methods
-	GameObject();
-	GameObject(char* name);
+	GameObject(Game* game);
+	GameObject(Game* game, char* name);
+	GameObject(Game* game, char* name, XMVECTOR position);
 
-	void SetModel(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel);
-	void SetModel(ID3D11Device* device, ID3D11DeviceContext* context, char* filenameModel, char* filenameTexture);
+	Game* GetGame();
 
-	Model* GetModel();
+	void SetParent(GameObject* parent);
+	void RemoveParent();
+	GameObject* GetParent();
+
 	void AddChildren(GameObject* children);
 	bool RemoveChildren(GameObject* children);
+	GameObject* GetChildByName(char* name);
+	GameObject* GetChildByTag(char* tag);
+	GameObject* GetChildByIndex(int index);
+	vector<GameObject*> GetChildren();
 
-	void UpdateCollisionTree(XMMATRIX* world, XMVECTOR* scale);
-	bool CheckCollision(GameObject* otherGameObject);
-	bool CheckCollision(GameObject* otherGameObject, GameObject* rootObject);
+	template <class T> T* AddComponent();
+	template <class T> bool RemoveComponent();
+	template <class T> T* GetComponent();
 
-	void Execute(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection, Light* light);
-	virtual void Update();
-
-	XMVECTOR GetWorldScale();
-	XMVECTOR GetWorldPosition();
-
-	void LookAtXZ(XMVECTOR point);
-	void Rotate(XMVECTOR axis, float degrees);
-	void MoveForward(float distance);
-	void MoveRight(float distance);
-	void MoveRight(float distance, GameObject* collisionRootObject);
+	void Update(XMMATRIX* world);
 };
+
+template<class T>
+inline T* GameObject::AddComponent()
+{
+	for (Component* component : componentList)
+	{
+		if (component == dynamic_cast<T*>(component))
+		{
+			return NULL;
+		}
+	}
+	componentList.push_back(new T(this));
+	return (T*) componentList.back();
+}
+
+// TODO: If the component gets removed after storing it outside, it is probably changing values from other objects!
+// TODO: Transform should not be removeable.
+template<class T>
+inline bool GameObject::RemoveComponent()
+{
+	int i = 0;
+	for(Component* component : componentList)
+	{
+		if (component == dynamic_cast<T*>(component))
+		{
+			delete componentList[i];
+			componentList.erase(componentList.begin() + i);
+			return true;
+		}
+		i++;
+	}
+	return false;
+}
+
+template<class T>
+inline T* GameObject::GetComponent()
+{
+	for(Component* component : componentList)
+	{
+		if (component == dynamic_cast<T*>(component))
+		{
+			return (T*) component;
+		}
+	}
+	return NULL;
+}

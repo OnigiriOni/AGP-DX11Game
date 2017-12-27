@@ -1,5 +1,5 @@
 #include "model.h"
-#include "newgameobject.h"
+#include "gameobject.h"
 #include "renderer.h"
 
 void Model::CalculateModelCentre()
@@ -60,7 +60,7 @@ void Model::CalculateBoundingSphereRadius()
 	boundingSphereRadius = sqrt(distanceSquared);
 }
 
-Model::Model(NewGameObject* parentObject)
+Model::Model(GameObject* parentObject)
 {
 	gameObject = parentObject;
 	name = "Model";

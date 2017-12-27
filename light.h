@@ -10,7 +10,7 @@ public:
 	XMVECTOR directionalLightColour;
 	XMVECTOR ambientLightColour;
 
-	Light(NewGameObject* parentObject);
+	Light(GameObject* parentObject);
 
 	void Update();
 };

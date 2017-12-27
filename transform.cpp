@@ -20,13 +20,13 @@ void Transform::CalculateWorldMatrix()
 	right = -XMVector3Cross(forward, up);
 }
 
-Transform::Transform(NewGameObject* parentObject)
+Transform::Transform(GameObject* parentObject)
 {
 	gameObject = parentObject;
 	name = "Transform";
 }
 
-Transform::Transform(NewGameObject* parentObject, XMVECTOR position)
+Transform::Transform(GameObject* parentObject, XMVECTOR position)
 {
 	gameObject = parentObject;
 	Transform::position = position;

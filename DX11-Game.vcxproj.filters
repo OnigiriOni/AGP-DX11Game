@@ -21,22 +21,13 @@
     <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="objfilemodel.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="inputmanager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="gameobject.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="game.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="newgameobject.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="component.cpp">
@@ -57,7 +48,13 @@
     <ClCompile Include="spherecollider.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="newcamera.cpp">
+    <ClCompile Include="camera.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="oldgameobject.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="gameobject.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -66,22 +63,13 @@
     <FxCompile Include="model_shaders.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="objfilemodel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="inputmanager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="gameobject.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="game.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="newgameobject.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="component.h">
@@ -102,7 +90,13 @@
     <ClInclude Include="spherecollider.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="newcamera.h">
+    <ClInclude Include="camera.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="oldgameobject.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="gameobject.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

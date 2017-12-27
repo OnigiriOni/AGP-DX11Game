@@ -17,8 +17,8 @@ public:
 	XMVECTOR		forward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	XMVECTOR		right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
-	Transform(NewGameObject* parentObject);
-	Transform(NewGameObject* parentObject, XMVECTOR position);
+	Transform(GameObject* parentObject);
+	Transform(GameObject* parentObject, XMVECTOR position);
 	~Transform();
 
 	void SetWorldMatrix(XMMATRIX world);

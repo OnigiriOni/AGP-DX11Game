@@ -7,12 +7,12 @@
 #define XM_NO_ALIGNMENT
 #include <xnamath.h>
 
-class NewGameObject;
+class GameObject;
 
 class Component
 {
 protected:
-	NewGameObject*	gameObject;
+	GameObject*	gameObject;
 
 public:
 	char*			name = "";

@@ -128,14 +128,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="camera.cpp" />
     <ClCompile Include="component.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="gameobject.cpp" />
+    <ClCompile Include="oldgameobject.cpp" />
     <ClCompile Include="inputmanager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="newcamera.cpp" />
-    <ClCompile Include="newgameobject.cpp" />
+    <ClCompile Include="camera.cpp" />
+    <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="objfilemodel.cpp" />
@@ -165,13 +164,12 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h" />
     <ClInclude Include="component.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="gameobject.h" />
+    <ClInclude Include="oldgameobject.h" />
     <ClInclude Include="inputmanager.h" />
-    <ClInclude Include="newcamera.h" />
-    <ClInclude Include="newgameobject.h" />
+    <ClInclude Include="camera.h" />
+    <ClInclude Include="gameobject.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="objfilemodel.h" />

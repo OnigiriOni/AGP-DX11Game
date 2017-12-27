@@ -1,6 +1,6 @@
 #include "game.h"
 
-bool Game::SetHierarchie(NewGameObject* child)
+bool Game::SetHierarchie(GameObject* child)
 {
 	if (SetHierarchie(NULL, child))
 	{
@@ -9,7 +9,7 @@ bool Game::SetHierarchie(NewGameObject* child)
 	return false;
 }
 
-bool Game::SetHierarchie(NewGameObject* parent, NewGameObject* child)
+bool Game::SetHierarchie(GameObject* parent, GameObject* child)
 {
 	if (parent == NULL)					// -> Set child to game
 	{
@@ -59,14 +59,14 @@ Game::Game()
 	updates = 0;
 }
 
-vector<NewGameObject*> Game::GetEntities()
+vector<GameObject*> Game::GetEntities()
 {
 	return entityList;
 }
 
-void Game::AddEntity(NewGameObject* gameObject)
+void Game::AddEntity(GameObject* gameObject)
 {
-	for (NewGameObject* entity : entityList)
+	for (GameObject* entity : entityList)
 	{
 		if (entity == gameObject)
 		{
@@ -76,10 +76,10 @@ void Game::AddEntity(NewGameObject* gameObject)
 	entityList.push_back(gameObject);
 }
 
-bool Game::RemoveEntity(NewGameObject * gameObject)
+bool Game::RemoveEntity(GameObject * gameObject)
 {
 	int i = 0;
-	for (NewGameObject* entity : entityList)
+	for (GameObject* entity : entityList)
 	{
 		if (entity == gameObject)
 		{
@@ -96,7 +96,7 @@ void Game::Update()
 	if (!isEnabled) return;
 
 	// Update for all enabled gameObjects
-	for (NewGameObject* gameObject : entityList)
+	for (GameObject* gameObject : entityList)
 	{
 		gameObject->Update(&world);
 	}
