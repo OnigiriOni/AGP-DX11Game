@@ -34,7 +34,7 @@ HRESULT Renderer::InitialiseGraphics(ID3D11Device* device, ID3D11DeviceContext* 
 	return S_OK;
 }
 
-void Renderer::AddCamera(Camera* camera)
+void Renderer::AddCamera(NewCamera* camera)
 {
 	Renderer::camera = camera;
 }

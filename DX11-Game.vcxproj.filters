@@ -57,6 +57,9 @@
     <ClCompile Include="spherecollider.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="newcamera.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders.hlsl" />
@@ -97,6 +100,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="spherecollider.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="newcamera.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

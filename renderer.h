@@ -10,7 +10,8 @@
 #include <xnamath.h>
 
 #include "model.h"
-#include "camera.h"
+//#include "camera.h"
+#include "newcamera.h"
 #include "light.h"
 
 class Renderer
@@ -36,7 +37,7 @@ private:
 	int model_cb_byteWidth = 112;		// The size of the combined buffer bytes. Always update after a const buffer struct change
 
 	//TODO: lists of cameras and lights
-	Camera* camera;
+	NewCamera* camera;
 	Light* light;
 
 	HRESULT LoadShaders();
@@ -54,7 +55,7 @@ public:
 	//void operator=(Renderer const&) = delete;
 
 	HRESULT InitialiseGraphics(ID3D11Device* device, ID3D11DeviceContext* context);
-	void AddCamera(Camera* camera);
+	void AddCamera(NewCamera* camera);
 	void AddLight(Light* light);
 
 	void Draw(Model* model, XMMATRIX* world);

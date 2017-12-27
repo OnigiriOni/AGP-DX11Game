@@ -42,8 +42,7 @@ NewGameObject*				g_pNewGameObject;
 NewGameObject*				g_pNewNew;
 NewGameObject*				g_pCollision;
 NewGameObject*				g_pLight;
-
-Camera*						g_pCamera;
+NewGameObject*				g_pCamera;
 
 
 // Rename for each tutorial
@@ -379,18 +378,14 @@ HRESULT InitialiseGraphics()
 
 
 	// Load the camera
-	g_pCamera = new Camera(XMVectorSet(0.0f, 20.0f, -50.0f, 0.0f));
-	g_pCamera->name = "Player";
-	g_pCamera->SetModel(g_pD3DDevice, g_pImmediateContext, "assets/cube.obj");
+	g_pCamera = new NewGameObject(g_pGame, "MainCamera", XMVectorSet(0.0f, 20.0f, -50.0f, 0.0f));
+	g_pCamera->AddComponent<SphereCollider>();
+	g_pCamera->AddComponent<NewCamera>();
 
 
 	// Load the light
 	g_pLight = new NewGameObject(g_pGame, "Light01");
 	g_pLight->AddComponent<Light>();
-
-
-	// ihhhh
-	renderer->AddCamera(g_pCamera);
 
 	return S_OK;
 }
