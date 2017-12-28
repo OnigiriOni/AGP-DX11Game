@@ -60,13 +60,17 @@ void Model::CalculateBoundingSphereRadius()
 	boundingSphereRadius = sqrt(distanceSquared);
 }
 
+Model::Model()
+{
+}
+
 Model::Model(GameObject* parentObject)
 {
 	gameObject = parentObject;
 	name = "Model";
 }
 
-HRESULT Model::SetModel(char * filename)
+HRESULT Model::SetModel(char* filename)
 {
 	Renderer* renderer = Renderer::GetInstance();
 
@@ -97,12 +101,12 @@ HRESULT Model::SetTexture(char* filename)
 	return S_OK;
 }
 
-ObjFileModel * Model::GetModel()
+ObjFileModel* Model::GetModel()
 {
 	return object;
 }
 
-ID3D11ShaderResourceView * Model::GetTexture()
+ID3D11ShaderResourceView* Model::GetTexture()
 {
 	return texture;
 }
@@ -111,13 +115,9 @@ void Model::Update()
 {
 	if (!isEnabled) return;
 
-	Renderer* renderer = Renderer::GetInstance();
-
 	XMMATRIX world = gameObject->transform->GetWorldMatrix();
 
-	renderer->Draw(this, &world);
-
-	renderer = nullptr;
+	Renderer::GetInstance()->Draw(this, &world);
 }
 
 XMVECTOR Model::GetBoundingSphereCentre()
@@ -129,22 +129,3 @@ float Model::GetBoundingSphereRadius()
 {
 	return boundingSphereRadius;
 }
-
-//XMVECTOR Model::GetBoundingSphereWorldSpacePosition(XMMATRIX* objectWorld)
-//{
-//	return XMVector3Transform(boundingSpereCentre, *objectWorld);
-//}
-//
-//float Model::GetBoundingSphereRadius(XMVECTOR objectScale)
-//{
-//	float scaleMax = objectScale.x;
-//	if (objectScale.y > scaleMax)
-//	{
-//		scaleMax = objectScale.y;
-//	}
-//	if (objectScale.z > scaleMax)
-//	{
-//		scaleMax = objectScale.z;
-//	}
-//	return boundingSphereRadius * scaleMax;
-//}

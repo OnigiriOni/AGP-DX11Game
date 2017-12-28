@@ -11,8 +11,8 @@ class GameObject
 {
 private:
 	Game*						game;
-	GameObject*				parent;
-	vector<GameObject*>		childrenList;
+	GameObject*					parent;
+	vector<GameObject*>			childrenList;
 	
 	vector<Component*>			componentList;
 

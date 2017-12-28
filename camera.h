@@ -1,25 +1,36 @@
 #pragma once
 #include "component.h"
 
+class Model;
+
+enum CameraClearMode { COLOUR, SKYBOX };
+
 class Camera : public Component
 {
 private:
-	XMMATRIX				view;
-	XMMATRIX				projection;
+	XMMATRIX					view;
+	XMMATRIX					projection;
 
-	float					fieldOfView = 70.0f;
-	float					aspectRatio = 640.0f / 480.0f;
-	float					nearPlane = 1.0f;
-	float					farPlane = 200.0f;
+	Model*						skyBox;
+
+
+	float						fieldOfView = 70.0f;
+	float						aspectRatio = 640.0f / 480.0f;
+	float						nearPlane = 1.0f;
+	float						farPlane = 200.0f;
 
 	void CalculateProjectionMatrix();
 	void CalculateViewMatrix();
 
 public:
+	CameraClearMode				clearMode = COLOUR;
+
 	Camera(GameObject* parentObject);
 
 	XMMATRIX GetProjectionMatrix();
 	XMMATRIX GetViewMatrix();
+
+	void SetSkyBox(char* objectFilename, char* textureFilename);
 
 	void Update();
 

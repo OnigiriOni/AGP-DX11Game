@@ -31,6 +31,16 @@ HRESULT Renderer::InitialiseGraphics(ID3D11Device* device, ID3D11DeviceContext* 
 		return S_FALSE;
 	}
 
+	if (FAILED(CreateRasterizerState()))
+	{
+		return S_FALSE;
+	}
+
+	if (FAILED(CreateDepthStencilState()))
+	{
+		return S_FALSE;
+	}
+
 	return S_OK;
 }
 
@@ -159,6 +169,48 @@ HRESULT Renderer::CreateSampler()
 	{
 		return hr;
 	}
+
+	return S_OK;
+}
+
+HRESULT Renderer::CreateRasterizerState()
+{
+	HRESULT hr = S_OK;
+
+	D3D11_RASTERIZER_DESC rasterizer_desc;
+	ZeroMemory(&rasterizer_desc, sizeof(rasterizer_desc));
+	rasterizer_desc.FillMode = D3D11_FILL_SOLID;
+	rasterizer_desc.CullMode = D3D11_CULL_BACK;
+
+	hr = device->CreateRasterizerState(&rasterizer_desc, &rasterSolid);
+	if (FAILED(hr)) return hr;
+
+	rasterizer_desc.CullMode = D3D11_CULL_FRONT;
+
+	hr = device->CreateRasterizerState(&rasterizer_desc, &rasterSkyBox);
+	if (FAILED(hr)) return hr;
+
+	return S_OK;
+}
+
+HRESULT Renderer::CreateDepthStencilState()
+{
+	HRESULT hr = S_OK;
+
+	D3D11_DEPTH_STENCIL_DESC depthStencil_desc;
+	ZeroMemory(&depthStencil_desc, sizeof(depthStencil_desc));
+	depthStencil_desc.DepthEnable = true;
+	depthStencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencil_desc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthStencil_desc.StencilEnable = false;
+
+	hr = device->CreateDepthStencilState(&depthStencil_desc, &depthWriteSolid);
+	if (FAILED(hr)) return hr;
+
+	depthStencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+
+	hr = device->CreateDepthStencilState(&depthStencil_desc, &depthWriteSkyBox);
+	if (FAILED(hr)) return hr;
 
 	return S_OK;
 }

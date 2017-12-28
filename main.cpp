@@ -378,7 +378,8 @@ HRESULT InitialiseGraphics()
 	// Load the camera
 	g_pCamera = new GameObject(g_pGame, "MainCamera", XMVectorSet(0.0f, 20.0f, -50.0f, 0.0f));
 	g_pCamera->AddComponent<SphereCollider>();
-	g_pCamera->AddComponent<Camera>();
+	g_pCamera->AddComponent<Camera>()->clearMode = SKYBOX;
+	g_pCamera->GetComponent<Camera>()->SetSkyBox("assets/cube.obj", "assets/texture.bmp");
 
 
 	// Load the light

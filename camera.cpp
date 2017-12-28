@@ -33,11 +33,39 @@ XMMATRIX Camera::GetViewMatrix()
 	return view;
 }
 
+void Camera::SetSkyBox(char* objectFilename, char* textureFilename)
+{
+	skyBox = new Model();
+	skyBox->SetModel(objectFilename);
+	skyBox->SetTexture(textureFilename);
+}
+
 void Camera::Update()
 {
 	if (!isEnabled) return;
 
 	CalculateViewMatrix();
+
+	Renderer* renderer = Renderer::GetInstance();
+	switch (clearMode)
+	{
+	case COLOUR:
+		//renderer->immediateContext->RSSetState(renderer->rasterSolid);
+		//renderer->immediateContext->OMSetDepthStencilState(renderer->depthWriteSolid, 1);
+		break;
+
+	case SKYBOX:
+		renderer->immediateContext->RSSetState(renderer->rasterSkyBox);
+		renderer->immediateContext->OMSetDepthStencilState(renderer->depthWriteSkyBox, 1);
+
+		XMMATRIX world = gameObject->transform->GetWorldMatrix();
+		renderer->Draw(skyBox, &world); // TODO: skybox vor allem drawen.
+
+		renderer->immediateContext->OMSetDepthStencilState(renderer->depthWriteSolid, 1);
+		renderer->immediateContext->RSSetState(renderer->rasterSolid);
+		break;
+	}
+	renderer = nullptr;
 }
 
 void Camera::SetFieldOfView(float newFieldOfView)

@@ -17,6 +17,7 @@ private:
 	void CalculateBoundingSphereRadius();
 
 public:
+	Model();
 	Model(GameObject* parentObject);
 
 	HRESULT SetModel(char* filename);
@@ -28,6 +29,4 @@ public:
 
 	XMVECTOR GetBoundingSphereCentre();
 	float GetBoundingSphereRadius();
-	//XMVECTOR GetBoundingSphereWorldSpacePosition(XMMATRIX* objectWorld);
-	//float GetBoundingSphereRadius(XMVECTOR objectScale);
 };

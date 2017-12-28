@@ -42,12 +42,19 @@ private:
 	HRESULT LoadShaders();
 	HRESULT CreateConstantBuffer();
 	HRESULT CreateSampler();
+	HRESULT CreateRasterizerState();
+	HRESULT CreateDepthStencilState();
 
 	Renderer() {}
 	
 public:
 	ID3D11Device*				device;
 	ID3D11DeviceContext*		immediateContext;
+
+	ID3D11RasterizerState*		rasterSolid = 0;
+	ID3D11RasterizerState*		rasterSkyBox = 0;
+	ID3D11DepthStencilState*	depthWriteSolid = 0;
+	ID3D11DepthStencilState*	depthWriteSkyBox = 0;
 
 	static Renderer* GetInstance();
 
