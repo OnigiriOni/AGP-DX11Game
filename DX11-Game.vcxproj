@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="component.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="maze.cpp" />
     <ClCompile Include="oldgameobject.cpp" />
     <ClCompile Include="inputmanager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -166,6 +167,7 @@
   <ItemGroup>
     <ClInclude Include="component.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="maze.h" />
     <ClInclude Include="oldgameobject.h" />
     <ClInclude Include="inputmanager.h" />
     <ClInclude Include="camera.h" />

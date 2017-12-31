@@ -1,4 +1,5 @@
 #include "game.h"
+#include "renderer.h"
 
 bool Game::SetHierarchie(GameObject* child)
 {
@@ -91,14 +92,45 @@ bool Game::RemoveEntity(GameObject * gameObject)
 	return false;
 }
 
+void Game::PreUpdate()
+{
+	// Render the skybox
+	Camera* camera = Renderer::GetInstance()->GetCamera();
+
+	if (camera != nullptr && camera->clearMode == SKYBOX)
+	{
+		camera->RenderSkyBox();
+	}
+}
+
+void Game::PostUpdate()
+{
+}
+
 void Game::Update()
 {
 	if (!isEnabled) return;
+
+	PreUpdate();
 
 	// Update for all enabled gameObjects
 	for (GameObject* gameObject : entityList)
 	{
 		gameObject->Update(&world);
 	}
+
+	PostUpdate();
+
 	updates = 1;
+}
+
+void Game::Start()
+{
+	if (!isEnabled) return;
+
+	// Start for all enabled gameObjects
+	for (GameObject* gameObject : entityList)
+	{
+		gameObject->Update(&world);
+	}
 }

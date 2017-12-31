@@ -31,6 +31,7 @@ public:
 	XMMATRIX GetViewMatrix();
 
 	void SetSkyBox(char* objectFilename, char* textureFilename);
+	void RenderSkyBox();
 
 	void Update();
 

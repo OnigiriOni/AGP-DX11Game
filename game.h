@@ -14,6 +14,9 @@ private:
 	void AddEntity(GameObject* gameObject);
 	bool RemoveEntity(GameObject* gameObject);
 
+	void PreUpdate();
+	void PostUpdate();
+
 public:
 	bool						isEnabled = true;
 
@@ -27,4 +30,6 @@ public:
 	int GetUpdates();
 
 	void Update();
+
+	void Start();
 };

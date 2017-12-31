@@ -57,6 +57,9 @@
     <ClCompile Include="gameobject.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="maze.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders.hlsl" />
@@ -97,6 +100,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="gameobject.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="maze.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

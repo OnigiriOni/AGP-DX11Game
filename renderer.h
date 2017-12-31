@@ -59,8 +59,10 @@ public:
 	static Renderer* GetInstance();
 
 	HRESULT InitialiseGraphics(ID3D11Device* device, ID3D11DeviceContext* context);
+	
 	void AddCamera(Camera* camera);
 	void AddLight(Light* light);
+	Camera* GetCamera();
 
 	void Draw(Model* model, XMMATRIX* world);
 };

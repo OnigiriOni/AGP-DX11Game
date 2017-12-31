@@ -54,6 +54,11 @@ void Renderer::AddLight(Light* light)
 	Renderer::light = light;
 }
 
+Camera * Renderer::GetCamera()
+{
+	return camera;
+}
+
 HRESULT Renderer::LoadShaders()
 {
 	HRESULT hr = S_OK;

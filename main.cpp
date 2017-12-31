@@ -34,13 +34,13 @@ ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 
 
 Renderer*					renderer = Renderer::GetInstance();
-Game*						g_pGame;
+Game*						g_pGame = new Game();
 
-GameObject*				g_pNewGameObject;
-GameObject*				g_pNewNew;
-GameObject*				g_pCollision;
-GameObject*				g_pLight;
-GameObject*				g_pCamera;
+GameObject*					g_pNewGameObject;
+GameObject*					g_pNewNew;
+GameObject*					g_pCollision;
+GameObject*					g_pLight;
+GameObject*					g_pCamera;
 
 
 // Rename for each tutorial
@@ -97,6 +97,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// Main message loop
 	MSG msg = { 0 };
+
+	g_pGame->Start();
 
 	while (msg.message != WM_QUIT)
 	{
@@ -349,17 +351,14 @@ HRESULT InitialiseGraphics()
 	renderer->InitialiseGraphics(g_pD3DDevice, g_pImmediateContext);
 
 
-	// Create game hierarchie
-	g_pGame = new Game();
-
-
 	// Load the objects
 	g_pNewGameObject = new GameObject(g_pGame, "TestObject01", XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	g_pNewNew = new GameObject(g_pGame, "TestObject02", XMVectorSet(10.0f, 0.0f, 0.0f, 0.0f));
 	g_pCollision = new GameObject(g_pGame, "Collision01", XMVectorSet(20.0f, 0.0f, 0.0f, 0.0f));
 
-	g_pNewGameObject->AddComponent<Model>()->SetModel("assets/sphere.obj");
+	g_pNewGameObject->AddComponent<Model>()->SetModel("assets/key.obj");
 	g_pNewGameObject->GetComponent<Model>()->SetTexture("assets/texture.bmp");
+	g_pNewGameObject->transform->rotation = XMVectorSet(0.0f, 90.0f, 0.0f, 0.0f);
 	g_pNewGameObject->AddComponent<SphereCollider>();
 
 	g_pNewNew->AddComponent<Model>()->SetModel("assets/sphere.obj");
@@ -376,11 +375,12 @@ HRESULT InitialiseGraphics()
 
 
 	// Load the camera
-	g_pCamera = new GameObject(g_pGame, "MainCamera", XMVectorSet(0.0f, 20.0f, -50.0f, 0.0f));
+	g_pCamera = new GameObject(g_pGame, "MainCamera", XMVectorSet(0.0f, 0.0f, -50.0f, 0.0f));
 	g_pCamera->AddComponent<SphereCollider>();
 	g_pCamera->AddComponent<Camera>()->clearMode = SKYBOX;
 	g_pCamera->GetComponent<Camera>()->SetSkyBox("assets/cube.obj", "assets/texture.bmp");
 
+	
 
 	// Load the light
 	g_pLight = new GameObject(g_pGame, "Light01");
@@ -410,6 +410,11 @@ void RenderFrame(void)
 	if (IsKeyPressed(DIK_N))
 	{
 		//g_pNewNew->transform->position += g_pNewNew->transform->right * 0.001f;
+		g_pCamera->transform->position += g_pCamera->transform->right * 0.01f;
+	}
+	if (IsKeyPressed(DIK_R))
+	{
+		g_pCamera->transform->RotateNormal(g_pCamera->transform->up, -0.05f);
 	}
 
 	// Select which primitive type to use
@@ -420,16 +425,8 @@ void RenderFrame(void)
 	g_pImmediateContext->ClearDepthStencilView(g_pZBuffer, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 
-
-
-
 	// RENDER HERE
 	g_pGame->Update();
-
-
-
-	
-
 
 
 	// Display what has just been rendered

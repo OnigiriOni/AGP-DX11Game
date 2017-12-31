@@ -9,7 +9,7 @@ void Camera::CalculateProjectionMatrix()
 
 void Camera::CalculateViewMatrix()
 {
-	view = XMMatrixLookAtLH(gameObject->transform->position, gameObject->transform->forward, gameObject->transform->up);
+	view = XMMatrixLookAtLH(gameObject->transform->position, gameObject->transform->position + gameObject->transform->forward, gameObject->transform->up);
 }
 
 Camera::Camera(GameObject* parentObject)
@@ -40,32 +40,35 @@ void Camera::SetSkyBox(char* objectFilename, char* textureFilename)
 	skyBox->SetTexture(textureFilename);
 }
 
+void Camera::RenderSkyBox()
+{
+	Renderer* renderer = Renderer::GetInstance();
+
+	renderer->immediateContext->RSSetState(renderer->rasterSkyBox);
+	renderer->immediateContext->OMSetDepthStencilState(renderer->depthWriteSkyBox, 1);
+
+	// Normal skybox - move delay!?!?
+	XMMATRIX world = XMMatrixIdentity();
+	world *= XMMatrixScalingFromVector(gameObject->transform->scale);
+	world *= XMMatrixTranslationFromVector(gameObject->transform->position);
+
+	// Static background - no move delay
+	//XMMATRIX world = gameObject->transform->GetWorldMatrix();
+
+
+	renderer->Draw(skyBox, &world);
+
+	renderer->immediateContext->OMSetDepthStencilState(renderer->depthWriteSolid, 1);
+	renderer->immediateContext->RSSetState(renderer->rasterSolid);
+
+	renderer = nullptr;
+}
+
 void Camera::Update()
 {
 	if (!isEnabled) return;
 
 	CalculateViewMatrix();
-
-	Renderer* renderer = Renderer::GetInstance();
-	switch (clearMode)
-	{
-	case COLOUR:
-		//renderer->immediateContext->RSSetState(renderer->rasterSolid);
-		//renderer->immediateContext->OMSetDepthStencilState(renderer->depthWriteSolid, 1);
-		break;
-
-	case SKYBOX:
-		renderer->immediateContext->RSSetState(renderer->rasterSkyBox);
-		renderer->immediateContext->OMSetDepthStencilState(renderer->depthWriteSkyBox, 1);
-
-		XMMATRIX world = gameObject->transform->GetWorldMatrix();
-		renderer->Draw(skyBox, &world); // TODO: skybox vor allem drawen.
-
-		renderer->immediateContext->OMSetDepthStencilState(renderer->depthWriteSolid, 1);
-		renderer->immediateContext->RSSetState(renderer->rasterSolid);
-		break;
-	}
-	renderer = nullptr;
 }
 
 void Camera::SetFieldOfView(float newFieldOfView)
