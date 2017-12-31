@@ -13,6 +13,7 @@ int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf
 #include "renderer.h"
 #include "gameobject.h"
 #include "game.h"
+#include "maze.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -36,11 +37,11 @@ ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 Renderer*					renderer = Renderer::GetInstance();
 Game*						g_pGame = new Game();
 
-GameObject*					g_pNewGameObject;
 GameObject*					g_pNewNew;
 GameObject*					g_pCollision;
 GameObject*					g_pLight;
 GameObject*					g_pCamera;
+Maze*						g_pMaze;
 
 
 // Rename for each tutorial
@@ -352,14 +353,8 @@ HRESULT InitialiseGraphics()
 
 
 	// Load the objects
-	g_pNewGameObject = new GameObject(g_pGame, "TestObject01", XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	g_pNewNew = new GameObject(g_pGame, "TestObject02", XMVectorSet(10.0f, 0.0f, 0.0f, 0.0f));
 	g_pCollision = new GameObject(g_pGame, "Collision01", XMVectorSet(20.0f, 0.0f, 0.0f, 0.0f));
-
-	g_pNewGameObject->AddComponent<Model>()->SetModel("assets/key.obj");
-	g_pNewGameObject->GetComponent<Model>()->SetTexture("assets/texture.bmp");
-	g_pNewGameObject->transform->rotation = XMVectorSet(0.0f, 90.0f, 0.0f, 0.0f);
-	g_pNewGameObject->AddComponent<SphereCollider>();
 
 	g_pNewNew->AddComponent<Model>()->SetModel("assets/sphere.obj");
 	g_pNewNew->GetComponent<Model>()->SetTexture("assets/texture.bmp");
@@ -374,8 +369,13 @@ HRESULT InitialiseGraphics()
 	g_pGame->SetHierarchie(g_pCollision, g_pNewNew);
 
 
+	g_pMaze = new Maze(g_pGame);
+	g_pMaze->GenerateMazeFromHightMap("assets/maze02.bmp");
+
+
+
 	// Load the camera
-	g_pCamera = new GameObject(g_pGame, "MainCamera", XMVectorSet(0.0f, 0.0f, -50.0f, 0.0f));
+	g_pCamera = new GameObject(g_pGame, "MainCamera", XMVectorSet(0.0f, 50.0f, -50.0f, 0.0f));
 	g_pCamera->AddComponent<SphereCollider>();
 	g_pCamera->AddComponent<Camera>()->clearMode = SKYBOX;
 	g_pCamera->GetComponent<Camera>()->SetSkyBox("assets/cube.obj", "assets/texture.bmp");
@@ -396,10 +396,9 @@ void RenderFrame(void)
 {
 	// Test
 	ReadInputStates();
-	if (IsKeyPressed(DIK_B))
+	if (IsKeyPressed(DIK_W))
 	{
-		XMVECTOR pos = g_pNewGameObject->transform->position;
-		g_pNewGameObject->transform->position += g_pNewGameObject->transform->right * 0.001f;
+		g_pCamera->transform->position += g_pCamera->transform->forward * 0.3f;
 		
 		//if (g_pNewGameObject->GetComponent<SphereCollider>()->CheckCollision(g_pCollision->GetComponent<SphereCollider>()))
 		//{
@@ -407,15 +406,34 @@ void RenderFrame(void)
 		//}
 	}
 
-	if (IsKeyPressed(DIK_N))
+	if (IsKeyPressed(DIK_S))
 	{
-		//g_pNewNew->transform->position += g_pNewNew->transform->right * 0.001f;
-		g_pCamera->transform->position += g_pCamera->transform->right * 0.01f;
+		g_pCamera->transform->position -= g_pCamera->transform->forward * 0.3f;
 	}
-	if (IsKeyPressed(DIK_R))
+	if (IsKeyPressed(DIK_A))
 	{
-		g_pCamera->transform->RotateNormal(g_pCamera->transform->up, -0.05f);
+		g_pCamera->transform->position -= g_pCamera->transform->right * 0.3f;
 	}
+	if (IsKeyPressed(DIK_D))
+	{
+		g_pCamera->transform->position += g_pCamera->transform->right * 0.3f;
+	}
+	if (IsKeyPressed(DIK_E))
+	{
+		g_pCamera->transform->RotateNormal(g_pCamera->transform->up, 0.3f);
+	}
+	if (IsKeyPressed(DIK_Q))
+	{
+		g_pCamera->transform->RotateNormal(g_pCamera->transform->up, -0.3f);
+	}
+
+	for (GameObject* key : g_pMaze->GetKeys())
+	{
+		key->transform->RotateNormal(key->transform->up, 1.0f);
+	}
+
+
+
 
 	// Select which primitive type to use
 	g_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

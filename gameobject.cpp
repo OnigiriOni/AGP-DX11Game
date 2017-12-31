@@ -23,6 +23,17 @@ GameObject::GameObject(Game* game, char* name)
 	game->SetHierarchie(NULL, this);
 }
 
+GameObject::GameObject(Game * game, XMVECTOR position)
+{
+	GameObject::game = game;
+	name = "GameObject";
+	componentList.push_back(new Transform(this, position));
+	transform = (Transform*)componentList.back();
+
+	// Set this as child of game
+	game->SetHierarchie(NULL, this);
+}
+
 GameObject::GameObject(Game* game, char* name, XMVECTOR position)
 {
 	GameObject::game = game;

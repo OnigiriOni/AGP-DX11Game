@@ -17,7 +17,7 @@ private:
 	float						fieldOfView = 70.0f;
 	float						aspectRatio = 640.0f / 480.0f;
 	float						nearPlane = 1.0f;
-	float						farPlane = 200.0f;
+	float						farPlane = 400.0f;
 
 	void CalculateProjectionMatrix();
 	void CalculateViewMatrix();

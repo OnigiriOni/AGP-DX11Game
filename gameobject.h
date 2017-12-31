@@ -4,6 +4,7 @@
 #include "model.h"
 #include "light.h"
 #include "spherecollider.h"
+#include "camera.h"
 
 class Game;
 
@@ -27,6 +28,7 @@ public:
 	// Methods
 	GameObject(Game* game);
 	GameObject(Game* game, char* name);
+	GameObject(Game* game, XMVECTOR position);
 	GameObject(Game* game, char* name, XMVECTOR position);
 
 	Game* GetGame();
