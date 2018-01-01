@@ -5,6 +5,7 @@ class Transform : public Component
 {
 private:
 	XMMATRIX		world = XMMatrixIdentity();
+	XMMATRIX		worldWithoutRotation = XMMatrixIdentity();
 
 	void CalculateWorldMatrix();
 
@@ -23,6 +24,7 @@ public:
 
 	void SetWorldMatrix(XMMATRIX world);
 	XMMATRIX GetWorldMatrix();
+	XMMATRIX GetWorldWithoutRotation();
 
 	void Update();
 

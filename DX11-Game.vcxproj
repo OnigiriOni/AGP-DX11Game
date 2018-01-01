@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="component.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gate.cpp" />
     <ClCompile Include="maze.cpp" />
     <ClCompile Include="oldgameobject.cpp" />
     <ClCompile Include="inputmanager.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="objfilemodel.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="spherecollider.cpp" />
     <ClCompile Include="transform.cpp" />
@@ -167,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="component.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="gate.h" />
     <ClInclude Include="maze.h" />
     <ClInclude Include="oldgameobject.h" />
     <ClInclude Include="inputmanager.h" />
@@ -175,6 +178,7 @@
     <ClInclude Include="light.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="objfilemodel.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="spherecollider.h" />
     <ClInclude Include="transform.h" />

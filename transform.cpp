@@ -10,6 +10,10 @@ void Transform::CalculateWorldMatrix()
 	world *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
 	world *= XMMatrixTranslationFromVector(position);
 
+	worldWithoutRotation = XMMatrixIdentity();
+	worldWithoutRotation *= XMMatrixScalingFromVector(scale);
+	worldWithoutRotation *= XMMatrixTranslationFromVector(position);
+
 	// Forward
 	float dx = sin(rotation.y * (XM_PI / 180.0));
 	float dz = cos(rotation.y * (XM_PI / 180.0));
@@ -45,6 +49,11 @@ void Transform::SetWorldMatrix(XMMATRIX world)
 XMMATRIX Transform::GetWorldMatrix()
 {
 	return world;
+}
+
+XMMATRIX Transform::GetWorldWithoutRotation()
+{
+	return worldWithoutRotation;
 }
 
 void Transform::Update()

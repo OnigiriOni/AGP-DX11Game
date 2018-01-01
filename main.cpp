@@ -14,6 +14,7 @@ int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf
 #include "gameobject.h"
 #include "game.h"
 #include "maze.h"
+#include "player.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -37,10 +38,8 @@ ID3D11RenderTargetView*		g_pBackBufferRTView = NULL;
 Renderer*					renderer = Renderer::GetInstance();
 Game*						g_pGame = new Game();
 
-GameObject*					g_pNewNew;
-GameObject*					g_pCollision;
 GameObject*					g_pLight;
-GameObject*					g_pCamera;
+GameObject*					g_pPlayer;
 Maze*						g_pMaze;
 
 
@@ -317,7 +316,7 @@ HRESULT InitialiseD3D()
 void ShutdownD3D()
 {
 	//delete g_pModel;
-	delete g_pCamera;
+	//delete g_pCamera;
 	//delete g_pRootNode;
 	//delete g_pTest3;
 	//delete g_pTest2;
@@ -353,34 +352,21 @@ HRESULT InitialiseGraphics()
 
 
 	// Load the objects
-	g_pNewNew = new GameObject(g_pGame, "TestObject02", XMVectorSet(10.0f, 0.0f, 0.0f, 0.0f));
-	g_pCollision = new GameObject(g_pGame, "Collision01", XMVectorSet(20.0f, 0.0f, 0.0f, 0.0f));
-
-	g_pNewNew->AddComponent<Model>()->SetModel("assets/sphere.obj");
-	g_pNewNew->GetComponent<Model>()->SetTexture("assets/texture.bmp");
-	g_pNewNew->AddComponent<SphereCollider>();
-
-	g_pCollision->AddComponent<Model>()->SetModel("assets/sphere.obj");
-	g_pCollision->GetComponent<Model>()->SetTexture("assets/texture.bmp");
-	g_pCollision->transform->rotation = XMVectorSet(0.0f, 90.0f, 0.0f, 0.0f);
-	g_pCollision->AddComponent<SphereCollider>();
-
-
-	g_pGame->SetHierarchie(g_pCollision, g_pNewNew);
-
-
 	g_pMaze = new Maze(g_pGame);
 	g_pMaze->GenerateMazeFromHightMap("assets/maze02.bmp");
 
 
 
-	// Load the camera
-	g_pCamera = new GameObject(g_pGame, "MainCamera", XMVectorSet(0.0f, 50.0f, -50.0f, 0.0f));
-	g_pCamera->AddComponent<SphereCollider>();
-	g_pCamera->AddComponent<Camera>()->clearMode = SKYBOX;
-	g_pCamera->GetComponent<Camera>()->SetSkyBox("assets/cube.obj", "assets/texture.bmp");
-
+	// Load the player
+	g_pPlayer = new GameObject(g_pGame, "Player", g_pMaze->GetSpawn()->transform->position);
+	g_pPlayer->transform->rotation = XMVectorSet(0.0f, 90.0f, 0.0f, 0.0f);
+	g_pPlayer->AddComponent<Camera>()->clearMode = SKYBOX;
+	g_pPlayer->GetComponent<Camera>()->SetSkyBox("assets/cube.obj", "assets/texture.bmp");
+	g_pPlayer->AddComponent<SphereCollider>();
+	g_pPlayer->AddComponent<Player>();
 	
+	GameObject* gg = new GameObject(g_pGame, "gg", XMVectorSet(0.0f, 50.0f, -50.0f, 0.0f));
+	gg->AddComponent<SphereCollider>();
 
 	// Load the light
 	g_pLight = new GameObject(g_pGame, "Light01");
@@ -394,39 +380,7 @@ HRESULT InitialiseGraphics()
 //////////////////////////////////////////////////////////////////////////////////////
 void RenderFrame(void)
 {
-	// Test
-	ReadInputStates();
-	if (IsKeyPressed(DIK_W))
-	{
-		g_pCamera->transform->position += g_pCamera->transform->forward * 0.3f;
-		
-		//if (g_pNewGameObject->GetComponent<SphereCollider>()->CheckCollision(g_pCollision->GetComponent<SphereCollider>()))
-		//{
-		//	g_pNewGameObject->transform->position = pos;
-		//}
-	}
-
-	if (IsKeyPressed(DIK_S))
-	{
-		g_pCamera->transform->position -= g_pCamera->transform->forward * 0.3f;
-	}
-	if (IsKeyPressed(DIK_A))
-	{
-		g_pCamera->transform->position -= g_pCamera->transform->right * 0.3f;
-	}
-	if (IsKeyPressed(DIK_D))
-	{
-		g_pCamera->transform->position += g_pCamera->transform->right * 0.3f;
-	}
-	if (IsKeyPressed(DIK_E))
-	{
-		g_pCamera->transform->RotateNormal(g_pCamera->transform->up, 0.3f);
-	}
-	if (IsKeyPressed(DIK_Q))
-	{
-		g_pCamera->transform->RotateNormal(g_pCamera->transform->up, -0.3f);
-	}
-
+	// Rotate keys
 	for (GameObject* key : g_pMaze->GetKeys())
 	{
 		key->transform->RotateNormal(key->transform->up, 1.0f);

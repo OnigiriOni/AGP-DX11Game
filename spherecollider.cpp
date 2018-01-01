@@ -25,8 +25,6 @@ SphereCollider::SphereCollider(GameObject* parentObject)
 	name = "SphereCollider";
 
 	SetSphere();
-
-	__hook(&SphereCollider::CollisionEvent, this, &SphereCollider::OnCollision);
 }
 
 bool SphereCollider::CheckCollision(GameObject* otherObject)
@@ -73,12 +71,6 @@ bool SphereCollider::CheckCollision(GameObject* otherObject)
 	return false;
 }
 
-void SphereCollider::OnCollision(GameObject * otherObject)
-{
-	otherObject->name = otherObject->name;
-	name = name;
-}
-
 void SphereCollider::Update()
 {
 	if (!isEnabled) return;
@@ -90,8 +82,7 @@ void SphereCollider::Update()
 	{
 		if (CheckCollision(entity))
 		{
-			// TODO: Raise event for OnCollision(). With the object, or a struct with position, objects, etc.
-			__raise CollisionEvent(entity);
+			__raise OnCollision(gameObject, entity);
 		}
 	}
 }

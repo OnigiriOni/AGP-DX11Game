@@ -1,39 +1,43 @@
 #include "maze.h"
+#include "gate.h"
 
 void Maze::GenerateMaze(MazeStruct* information)
 {
 	// Wall base
-	if (information->y == 0) // 100% Black
+	if (information->y == 0) // 0 blue
 	{
 		maze.push_back(new GameObject(game, "Wall", XMVectorSet(information->x, 0.0f, information->z, 0.0f)));
 		maze.back()->AddComponent<Model>()->SetModel("assets/wall_base.obj");
 		maze.back()->GetComponent<Model>()->SetTexture("assets/wall_base.bmp");
 	}
 	// Wall gate
-	if (information->y == 36) // 100% Red
+	if (information->y == 36) // 36 blue
 	{
 		gate = new GameObject(game, "Gate", XMVectorSet(information->x, 0.0f, information->z, 0.0f));
 		gate->AddComponent<Model>()->SetModel("assets/wall_gate.obj");
 		gate->GetComponent<Model>()->SetTexture("assets/wall_gate.bmp");
+		gate->AddComponent<SphereCollider>();
+		gate->AddComponent<Gate>();
 	}
 	// Key
-	if (information->y == 127) // 50% Grey
+	if (information->y == 127) // 127 blue
 	{
 		keys.push_back(new GameObject(game, "Key", XMVectorSet(information->x, 5.0f, information->z, 0.0f)));
 		keys.back()->AddComponent<Model>()->SetModel("assets/key.obj");
 		keys.back()->GetComponent<Model>()->SetTexture("assets/key.bmp");
+		keys.back()->AddComponent<SphereCollider>();
 	}
 	// Guardian
-	if (information->y == 201) // 100% pink
+	if (information->y == 201) // 201 blue
 	{
 		guardians.push_back(new GameObject(game, "Guardian", XMVectorSet(information->x, 15.0f, information->z, 0.0f)));
 		guardians.back()->AddComponent<Model>()->SetModel("assets/guardian.obj");
 		guardians.back()->GetComponent<Model>()->SetTexture("assets/guardian.bmp");
 	}
 	// Player spawn
-	if (information->y == 14) // 50% orange
+	if (information->y == 14) // 14 blue
 	{
-		playerSpawn = new GameObject(game, "PlayerSpawn", XMVectorSet(information->x, 0.0f, information->z, 0.0f));
+		playerSpawn = new GameObject(game, "PlayerSpawn", XMVectorSet(information->x, 5.0f, information->z, 0.0f));
 	}
 }
 

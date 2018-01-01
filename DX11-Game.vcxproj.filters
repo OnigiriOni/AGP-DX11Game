@@ -60,6 +60,12 @@
     <ClCompile Include="maze.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="gate.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders.hlsl" />
@@ -103,6 +109,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="maze.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="gate.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

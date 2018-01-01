@@ -47,15 +47,7 @@ void Camera::RenderSkyBox()
 	renderer->immediateContext->RSSetState(renderer->rasterSkyBox);
 	renderer->immediateContext->OMSetDepthStencilState(renderer->depthWriteSkyBox, 1);
 
-	// Normal skybox - move delay!?!?
-	XMMATRIX world = XMMatrixIdentity();
-	world *= XMMatrixScalingFromVector(gameObject->transform->scale);
-	world *= XMMatrixTranslationFromVector(gameObject->transform->position);
-
-	// Static background - no move delay
-	//XMMATRIX world = gameObject->transform->GetWorldMatrix();
-
-
+	XMMATRIX world = gameObject->transform->GetWorldWithoutRotation();
 	renderer->Draw(skyBox, &world);
 
 	renderer->immediateContext->OMSetDepthStencilState(renderer->depthWriteSolid, 1);

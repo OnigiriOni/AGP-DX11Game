@@ -1,14 +1,22 @@
 #pragma once
+#include "component.h"
 
-#include "camera.h"
-
-class Player{
+class Player : public Component
+{
 private:
-	Camera*			mainCamera;
-	// Methods
-	
+	float moveSpeed = 0.3f;
+	float rotateSpeed = 0.8f;
+
+	XMVECTOR oldPosition;
 
 public:
-	Player();
+	int keys = 0;
+
+	Player(GameObject* parentObject);
+
 	void Update();
+
+	void Movement();
+
+	void OnCollision(GameObject* thisObject, GameObject* otherObject);
 };
