@@ -45,6 +45,26 @@ GameObject::GameObject(Game* game, char* name, XMVECTOR position)
 	game->SetHierarchie(NULL, this);
 }
 
+GameObject::~GameObject()
+{
+	game->SetHierarchie(NULL, this);
+	game->RemoveEntity(this);
+	game = nullptr;
+	delete game;
+	parent = nullptr;
+	delete parent;
+	for (GameObject* child : childrenList)
+	{
+		delete child;
+	}
+	for (Component* component : componentList)
+	{
+		delete component;
+	}
+	transform = nullptr;
+	delete transform;
+}
+
 Game * GameObject::GetGame()
 {
 	return game;

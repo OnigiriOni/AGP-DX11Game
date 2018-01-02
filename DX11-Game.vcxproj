@@ -131,6 +131,7 @@
     <ClCompile Include="component.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gate.cpp" />
+    <ClCompile Include="key.cpp" />
     <ClCompile Include="maze.cpp" />
     <ClCompile Include="oldgameobject.cpp" />
     <ClCompile Include="inputmanager.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="component.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gate.h" />
+    <ClInclude Include="key.h" />
     <ClInclude Include="maze.h" />
     <ClInclude Include="oldgameobject.h" />
     <ClInclude Include="inputmanager.h" />

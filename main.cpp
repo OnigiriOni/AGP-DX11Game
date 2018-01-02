@@ -14,7 +14,6 @@ int (WINAPIV * __vsnprintf_s)(char *, size_t, const char*, va_list) = _vsnprintf
 #include "gameobject.h"
 #include "game.h"
 #include "maze.h"
-#include "player.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +38,6 @@ Renderer*					renderer = Renderer::GetInstance();
 Game*						g_pGame = new Game();
 
 GameObject*					g_pLight;
-GameObject*					g_pPlayer;
 Maze*						g_pMaze;
 
 
@@ -315,13 +313,7 @@ HRESULT InitialiseD3D()
 //////////////////////////////////////////////////////////////////////////////////////
 void ShutdownD3D()
 {
-	//delete g_pModel;
-	//delete g_pCamera;
-	//delete g_pRootNode;
-	//delete g_pTest3;
-	//delete g_pTest2;
-	//delete g_pTest1;
-	//delete g_pModelSphere;
+	delete g_pMaze;
 	delete g_pLight;
 
 	if (g_pKeyboardDevice)
@@ -330,8 +322,7 @@ void ShutdownD3D()
 		g_pKeyboardDevice->Release();
 	}
 	if (g_pDirectInput) g_pDirectInput->Release();
-	//if (g_pTexture0) g_pTexture0->Release();
-	//if (g_pSampler0) g_pSampler0->Release();
+
 	if (g_pZBuffer) g_pZBuffer->Release();
 	if (g_pVertexBuffer) g_pVertexBuffer->Release();
 	if (g_pBackBufferRTView) g_pBackBufferRTView->Release();
@@ -350,23 +341,9 @@ HRESULT InitialiseGraphics()
 	// Load the renderer
 	renderer->InitialiseGraphics(g_pD3DDevice, g_pImmediateContext);
 
-
 	// Load the objects
 	g_pMaze = new Maze(g_pGame);
 	g_pMaze->GenerateMazeFromHightMap("assets/maze02.bmp");
-
-
-
-	// Load the player
-	g_pPlayer = new GameObject(g_pGame, "Player", g_pMaze->GetSpawn()->transform->position);
-	g_pPlayer->transform->rotation = XMVectorSet(0.0f, 90.0f, 0.0f, 0.0f);
-	g_pPlayer->AddComponent<Camera>()->clearMode = SKYBOX;
-	g_pPlayer->GetComponent<Camera>()->SetSkyBox("assets/cube.obj", "assets/texture.bmp");
-	g_pPlayer->AddComponent<SphereCollider>();
-	g_pPlayer->AddComponent<Player>();
-	
-	GameObject* gg = new GameObject(g_pGame, "gg", XMVectorSet(0.0f, 50.0f, -50.0f, 0.0f));
-	gg->AddComponent<SphereCollider>();
 
 	// Load the light
 	g_pLight = new GameObject(g_pGame, "Light01");
@@ -380,15 +357,6 @@ HRESULT InitialiseGraphics()
 //////////////////////////////////////////////////////////////////////////////////////
 void RenderFrame(void)
 {
-	// Rotate keys
-	for (GameObject* key : g_pMaze->GetKeys())
-	{
-		key->transform->RotateNormal(key->transform->up, 1.0f);
-	}
-
-
-
-
 	// Select which primitive type to use
 	g_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	

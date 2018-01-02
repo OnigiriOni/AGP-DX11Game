@@ -1,5 +1,7 @@
 #include "maze.h"
 #include "gate.h"
+#include "player.h"
+#include "key.h"
 
 void Maze::GenerateMaze(MazeStruct* information)
 {
@@ -9,6 +11,7 @@ void Maze::GenerateMaze(MazeStruct* information)
 		maze.push_back(new GameObject(game, "Wall", XMVectorSet(information->x, 0.0f, information->z, 0.0f)));
 		maze.back()->AddComponent<Model>()->SetModel("assets/wall_base.obj");
 		maze.back()->GetComponent<Model>()->SetTexture("assets/wall_base.bmp");
+		//maze.back()->AddComponent<SphereCollider>(); // too much performance loss
 	}
 	// Wall gate
 	if (information->y == 36) // 36 blue
@@ -26,6 +29,7 @@ void Maze::GenerateMaze(MazeStruct* information)
 		keys.back()->AddComponent<Model>()->SetModel("assets/key.obj");
 		keys.back()->GetComponent<Model>()->SetTexture("assets/key.bmp");
 		keys.back()->AddComponent<SphereCollider>();
+		keys.back()->AddComponent<Key>();
 	}
 	// Guardian
 	if (information->y == 201) // 201 blue
@@ -33,11 +37,17 @@ void Maze::GenerateMaze(MazeStruct* information)
 		guardians.push_back(new GameObject(game, "Guardian", XMVectorSet(information->x, 15.0f, information->z, 0.0f)));
 		guardians.back()->AddComponent<Model>()->SetModel("assets/guardian.obj");
 		guardians.back()->GetComponent<Model>()->SetTexture("assets/guardian.bmp");
+		guardians.back()->AddComponent<SphereCollider>();
 	}
 	// Player spawn
 	if (information->y == 14) // 14 blue
 	{
-		playerSpawn = new GameObject(game, "PlayerSpawn", XMVectorSet(information->x, 5.0f, information->z, 0.0f));
+		player = new GameObject(game, "Player", XMVectorSet(information->x, 5.0f, information->z, 0.0f));
+		player->transform->rotation = XMVectorSet(0.0f, 90.0f, 0.0f, 0.0f);
+		player->AddComponent<Camera>()->clearMode = SKYBOX;
+		player->GetComponent<Camera>()->SetSkyBox("assets/cube.obj", "assets/texture.bmp");
+		player->AddComponent<SphereCollider>()->isActive = true;
+		player->AddComponent<Player>()->maze = this;
 	}
 }
 
@@ -139,7 +149,22 @@ GameObject * Maze::GetGate()
 	return gate;
 }
 
-GameObject * Maze::GetSpawn()
+GameObject * Maze::GetPlayer()
 {
-	return playerSpawn;
+	return player;
+}
+
+bool Maze::RemoveKey(GameObject* object)
+{
+	int i = 0;
+	for (GameObject* key : keys)
+	{
+		if (key == object)
+		{
+			keys.erase(keys.begin() + i);
+			return true;
+		}
+		i++;
+	}
+	return false;
 }

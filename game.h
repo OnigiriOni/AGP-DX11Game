@@ -12,7 +12,6 @@ private:
 	int							updates;
 
 	void AddEntity(GameObject* gameObject);
-	bool RemoveEntity(GameObject* gameObject);
 
 	void PreUpdate();
 	void PostUpdate();
@@ -26,6 +25,7 @@ public:
 
 	bool SetHierarchie(GameObject* child);
 	bool SetHierarchie(GameObject* parent, GameObject* child);
+	bool RemoveEntity(GameObject* gameObject);
 
 	int GetUpdates();
 

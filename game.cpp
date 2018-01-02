@@ -77,7 +77,7 @@ void Game::AddEntity(GameObject* gameObject)
 	entityList.push_back(gameObject);
 }
 
-bool Game::RemoveEntity(GameObject * gameObject)
+bool Game::RemoveEntity(GameObject* gameObject)
 {
 	int i = 0;
 	for (GameObject* entity : entityList)

@@ -30,6 +30,7 @@ public:
 	GameObject(Game* game, char* name);
 	GameObject(Game* game, XMVECTOR position);
 	GameObject(Game* game, char* name, XMVECTOR position);
+	~GameObject();
 
 	Game* GetGame();
 

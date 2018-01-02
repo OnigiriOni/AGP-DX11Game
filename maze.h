@@ -15,7 +15,7 @@ private:
 	vector<GameObject*> keys;
 	vector<GameObject*> guardians;
 	GameObject*			gate;
-	GameObject*			playerSpawn;
+	GameObject*			player;
 	
 	void GenerateMaze(MazeStruct* information);
 
@@ -28,5 +28,7 @@ public:
 	vector<GameObject*> GetKeys();
 	vector<GameObject*> GetGuardians();
 	GameObject* GetGate();
-	GameObject* GetSpawn();
+	GameObject* GetPlayer();
+
+	bool RemoveKey(GameObject* object);
 };

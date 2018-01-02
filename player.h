@@ -1,6 +1,8 @@
 #pragma once
 #include "component.h"
 
+class Maze;
+
 class Player : public Component
 {
 private:
@@ -10,9 +12,12 @@ private:
 	XMVECTOR oldPosition;
 
 public:
+	Maze* maze;
+
 	int keys = 0;
 
 	Player(GameObject* parentObject);
+	~Player();
 
 	void Update();
 

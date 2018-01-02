@@ -66,6 +66,9 @@
     <ClCompile Include="gate.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="key.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders.hlsl" />
@@ -115,6 +118,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="gate.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="key.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

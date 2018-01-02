@@ -10,6 +10,7 @@ public:
 	XMVECTOR		localePosition;
 	float			radiusScale;
 	float			radius;
+	bool			isActive = false;
 
 	SphereCollider(GameObject*  parentObject);
 

@@ -1,7 +1,9 @@
 #include "player.h"
+#include "game.h"
 #include "gameobject.h"
 #include "inputmanager.h"
 #include "maze.h"
+#include "key.h"
 
 Player::Player(GameObject* parentObject)
 {
@@ -9,6 +11,11 @@ Player::Player(GameObject* parentObject)
 	name = "Player";
 
 	__hook(&SphereCollider::OnCollision, gameObject->GetComponent<SphereCollider>(), &Player::OnCollision);
+}
+
+Player::~Player()
+{
+	maze = nullptr;
 }
 
 void Player::Update()
@@ -58,11 +65,22 @@ void Player::Movement()
 
 void Player::OnCollision(GameObject* thisObject, GameObject* otherObject)
 {
+	// Rip performance
+	if (otherObject->name == "Wall")
+	{
+		gameObject->transform->position = oldPosition;
+	}
+
+	if (otherObject->name == "Guardian")
+	{
+		//reduce player health - needs a cooldown timer or the player is dead in 0.000001 seconds.
+	}
+
 	if (otherObject->name == "Key")
 	{
-		keys++;
+		keys += otherObject->GetComponent<Key>()->charges;
 
-		//destroy the key
-		
+		maze->RemoveKey(otherObject);
+		delete otherObject;
 	}
 }

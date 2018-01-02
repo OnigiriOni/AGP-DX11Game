@@ -73,7 +73,8 @@ bool SphereCollider::CheckCollision(GameObject* otherObject)
 
 void SphereCollider::Update()
 {
-	if (!isEnabled) return;
+	if (!isEnabled && !isActive) return;
+
 	if (gameObject->GetGame()->GetUpdates() < 1) return;
 
 	vector<GameObject*> otherEntities = gameObject->GetGame()->GetEntities();
